@@ -138,19 +138,18 @@ public class Speed {
         checkInit();
         Preconditions.checkArgument(Utils.isUrlCorrect(url), "Incorrect address " + url);
         String uniqueId = sRequestTaskQueue.getUniqueKey(url);
+        RequestTask task = null;
         if(Utils.isStringEmpty(uniqueId)){
             LogUtils.w("Did not find the task corresponding to the URL, is the URL spelled correctly?");
-            return null;
         } else {
-            RequestTask task = sRequestTaskQueue.getRequestTask(uniqueId);
+            task = sRequestTaskQueue.getRequestTask(uniqueId);
             if(!task.canPause()){
                 LogUtils.w("Only running or resume requestTask can pause !!!");
-                return null;
             } else {
                 sRequestTaskQueue.pause(task);
-                return task;
             }
         }
+        return task;
     }
 
     /**
@@ -163,19 +162,18 @@ public class Speed {
         checkInit();
         Preconditions.checkArgument(Utils.isUrlCorrect(url), "Incorrect address " + url);
         String uniqueId = sRequestTaskQueue.getUniqueKey(url);
+        RequestTask task = null;
         if(Utils.isStringEmpty(uniqueId)){
             LogUtils.w("Did not find the task corresponding to the URL, is the URL spelled correctly?");
-            return null;
         } else {
-            RequestTask task = sRequestTaskQueue.getRequestTask(uniqueId);
+            task = sRequestTaskQueue.getRequestTask(uniqueId);
             if(!task.canResume()){
                 LogUtils.w("Only pause requestTask can resume !!!");
-                return null;
             } else {
                 sRequestTaskQueue.resume(task);
-                return task;
             }
         }
+        return task;
     }
 
     /**
