@@ -16,6 +16,7 @@ import com.workdawn.speedlib.executor.ExecutorManager;
 import com.workdawn.speedlib.executor.RequestRunnable;
 import com.workdawn.speedlib.model.DownloadCallback;
 import com.workdawn.speedlib.notification.NotificationManagerCenter;
+import com.workdawn.speedlib.utils.Preconditions;
 
 import java.io.File;
 import java.util.Map;
@@ -135,6 +136,12 @@ public class RequestTask implements Comparable<RequestTask>{
 
     public File getSaveFile(){
         return saveFile;
+    }
+
+    public RequestTask setSaveFile(File saveFile) {
+        Preconditions.checkArgument(saveFile != null, "RequestTask saveFileDir must not be null");
+        this.saveFile = saveFile;
+        return this;
     }
 
     @Override
