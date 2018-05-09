@@ -13,8 +13,9 @@ Speed
 5.支持自定义网络下载器<br>
 6.支持自定义数据库访问器<br>
 7.支持全局请求头设置，支持特定下载请求头设置<br>
-8.支持同时执行的下载任务数量调整，或者根据网络自动跳转
-9.更多详见项目
+8.支持同时执行的下载任务数量调整，或者根据网络自动调整
+9.支持任务优先级(下面有详细介绍)
+10.更多详见项目
 
 效果展示(稍后添加)
 -----------
@@ -25,7 +26,7 @@ Speed
 1.最简单的使用方式，直接调用`Speed.start(url);`或者 `Speed.start(url, fileName);`，在调用了这个方法之后，Speed就会在后台启动相应线程去下载对应url下的资源文件<br>
 <br>
 
-2.如果想监听下载进度怎么办？ 简单，直接在start方法后面跟上下载进度监听器即可，如下面这样：
+2.如果想监听下载进度怎么办？ 简单，直接在start方法后面跟上下载进度监听器即可，举例如下：
 ```
             Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
@@ -41,7 +42,7 @@ Speed
 ```
 <br>
 
-3.如果想监听下载结果怎么办？ 也很简单可以直接在上面进度监听的后面跟上结果监听，如下面这样：
+3.如果想监听下载结果怎么办？ 也很简单可以直接在上面进度监听的后面跟上结果监听，举例如下：
 ```
 Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
@@ -72,7 +73,7 @@ Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProg
 一些允许自定义的设置项
 -----------------------
 
-自定义设置都通过SpeedOption类来完成
+全局自定义设置都通过SpeedOption类来完成
 <br>
 
 ```
@@ -92,3 +93,107 @@ public SpeedOption setAutoExitSpeedWhenAllTaskComplete(boolean exit);//设置是
 public SpeedOption setRequestHeaders(Map<String, String> headers);//设置全局请求头，如果某个任务设置了自己的请求头那么会忽略全局请求头
 
 ```
+
+特定的任务设置通过RequestTask来完成，比如：
+```
+public RequestTask setOnDownloadProgressChangeListener(IDownloadProgressCallback cb); //设置下载进度监听器
+public RequestTask setOnDownloadResultListener(IDownloadResultCallback cb); //设置下载完成度监听器
+public RequestTask setRequestHeaders(Map<String, String> headers); //设置请求头
+public void setPriority(int priority); //设置任务优先级
+
+```
+
+有关任务优先级说明：
+------------------
+Speed内部使用了优先级队列来组织每个下载任务，所以Speed中的任务天然带有优先级特性，改变任务的优先级可以通过设置`setPriority(int priority)`，数值越高优先级越高，设置的优先级仅仅影响在Resume队列中的任务，而不会影响正在执行的任务，
+也就是说，如果当前同时允许最多执行3个任务，那么当第四个，第五个任务到来的时候它们会进入Resume队列进行等待，等到执行队列中有任务执行完成后，Speed会自动调用Resume队列中的任务执行，这个时候会优先调用优先级高的任务；
+
+<br>
+
+自定义通知举例(其他自定义，如网络请求，数据库访问类似)
+--------------
+1.不想使用默认的通知怎么办？ 可以通过实现INotificationShow来实现自己的通知样式，举例如下：
+```
+public class NotificationShowImpl implements INotificationShow {
+    @Override
+    public int getSmallIcon() {
+        return R.mipmap.ic_launcher;
+    }
+
+    @Override
+    public Bitmap getLargeIcon() {
+        return null;
+    }
+
+    @Override
+    public String getContentTitle() {
+        return "开始下载";
+    }
+
+    @Override
+    public String getContent() {
+        return "正在下载";
+    }
+
+    @Override
+    public String getDownloadFinishContent() {
+        return "已经下载完成";
+    }
+
+    @Override
+    public boolean getAutoCancel() {
+        return true;
+    }
+
+    @Override
+    public RemoteViews getRemoteViews(RequestTask requestTask, Context context) {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.remote_notification_content);
+        return remoteViews;
+    }
+
+    @Override
+    public int getRemoteViewTitleViewId() {
+        return R.id.remote_tv_title;
+    }
+
+    @Override
+    public int getRemoteViewContentViewId() {
+        return R.id.remote_tv_content;
+    }
+
+    @Override
+    public int getRemoteViewProgressBarViewId() {
+        return R.id.p_remote;
+    }
+}
+```
+然后在初始化Speed的时候
+```
+    SpeedOption option = SpeedOption.newInstance()
+                .setNotificationShowImpl(new NotificationShowImpl());
+    Speed.init(context, option);
+```
+<br>
+
+
+2.默认的通知动作是什么也不干，如果想在下载完成后点击通知执行特定动作（比如安装应用），那么可以实现INotificationAction类，举例如下：
+```
+public class NotificationActionImpl implements INotificationAction {
+    @Override
+    public PendingIntent onAction(RequestTask requestTask, Context context) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_VIEW);
+        String type = "application/vnd.android.package-archive";
+        intent.setDataAndType(Uri.fromFile(requestTask.getSaveFile()), type);
+        return PendingIntent.getActivity(context, 0, intent, 0);
+    }
+}
+```
+然后在初始化Speed的时候
+```
+    SpeedOption option = SpeedOption.newInstance()
+                .setNotificationActionImpl(new NotificationActionImpl());
+    Speed.init(context, option);
+```
+
