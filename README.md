@@ -13,7 +13,8 @@ Speed
 5.支持自定义网络下载器<br>
 6.支持自定义数据库访问器<br>
 7.支持全局请求头设置，支持特定下载请求头设置<br>
-7.更多详见项目
+8.支持同时执行的下载任务数量调整，或者根据网络自动跳转
+9.更多详见项目
 
 效果展示(稍后添加)
 -----------
@@ -26,7 +27,7 @@ Speed
 
 2.如果想监听下载进度怎么办？ 简单，直接在start方法后面跟上下载进度监听器即可，如下面这样：
 ```
-            Speed.start().setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+            Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
                 public void onDownloading(long totalSize, long currentSize) {
                     //这里监听下载进度
@@ -42,7 +43,7 @@ Speed
 
 3.如果想监听下载结果怎么办？ 也很简单可以直接在上面进度监听的后面跟上结果监听，如下面这样：
 ```
-Speed.start(WeChat, "weChat.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
                 public void onDownloading(long totalSize, long currentSize) {
                 }
@@ -65,4 +66,29 @@ Speed.start(WeChat, "weChat.apk").setOnDownloadProgressChangeListener(new IDownl
 <br>
 5.重启下载，调用`Speed.resume(url)`，只有暂停状态下的任务（状态为PAUSE)执行这个方法才有效果，否则忽略，这个方法有可能返回null<br>
 <br>
-6.取消下载，`Speed.cancel(url)`取消指定任务，`Speed.cancel(List<String> urls)`取消一组任务，注意组里面的任务不应该过多，`Speed.cancelAll()`取消所有任务，执行完这个方法后会退出Speed，清空任务队列，取消任务执行线程池，如果想再次启动下载需要重新初始化Speed，也就是调用`Speed.init(context) 或者 Speed.init(context, speedOption)`
+6.取消下载，`Speed.cancel(url)`取消指定任务，`Speed.cancel(List<String> urls)`取消一组任务，注意组里面的任务不应该过多，`Speed.cancelAll()`取消所有任务，执行完这个方法后会退出Speed，清空任务队列，取消任务执行线程池，如果想再次启动下载需要重新初始化Speed，也就是调用`Speed.init(context) 或者 Speed.init(context, speedOption)`<br>
+<br>
+
+一些允许自定义的设置项
+-----------------------
+
+自定义设置都通过SpeedOption类来完成
+<br>
+
+```
+public SpeedOption setConnectTimeout(int timeoutMillis);//设置连接超时时间
+public SpeedOption setReadTimeOut(int timeoutMillis);//设置流读取超时时间
+public SpeedOption setDatabaseFactory(IDatabaseFactory databaseFactory);//设置数据库实现工厂
+public SpeedOption setHttpClientFactory(IHttpClientFactory httpClientFactory);//设置网络下载工厂
+public SpeedOption setNotificationShowImpl(INotificationShow iNotificationShow);//设置通知展现实现类
+public SpeedOption setNotificationActionImpl(INotificationAction iNotificationAction);//设置通知动作执行实现类
+public SpeedOption showNotification(boolean show);//设置是否在下载的同时显示下载通知，默认显示
+public SpeedOption showLog(boolean show);//设置是否打印日志，默认不打印
+public SpeedOption setMaxAllowRunningTaskCount(int maxNum);//设置最大允许同时执行的任务数量，默认3个任务
+public SpeedOption setAutoMaxAllowRunningTaskCount(boolean auto);//设置是否自动决定同时运行的任务数量，如果设置了这个那么执行的任务数量会根据当前网络状态自动调整，默认不自动
+public SpeedOption setUserAgent(String agent);//设置请求的Agent
+public SpeedOption setDownloadDir(File saveDir);//设置文件下载的存放位置
+public SpeedOption setAutoExitSpeedWhenAllTaskComplete(boolean exit);//设置是否在任务全部完成后退出Speed，默认不退出
+public SpeedOption setRequestHeaders(Map<String, String> headers);//设置全局请求头，如果某个任务设置了自己的请求头那么会忽略全局请求头
+
+```
