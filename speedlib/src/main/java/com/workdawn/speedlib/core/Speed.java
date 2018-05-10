@@ -128,14 +128,6 @@ public class Speed {
         return start(url, null);
     }
 
-    public static void start(List<String> urls, List<String> fileNames){
-
-    }
-
-    public static void start(List<String> urls){
-        start(urls, null);
-    }
-
     /**
      * Pause requestTask
      * @param url resource download address
