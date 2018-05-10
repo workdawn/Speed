@@ -114,7 +114,7 @@ public class RequestTaskQueue {
         pollRequestTaskToRunningQueue();
     }
 
-    void pollRequestTaskToRunningQueue(){
+    private void pollRequestTaskToRunningQueue(){
         if(resumeTaskQueue.size() > 0){
             if(getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum) {
                 runningTaskQueue.put(resumeTaskQueue.poll());
