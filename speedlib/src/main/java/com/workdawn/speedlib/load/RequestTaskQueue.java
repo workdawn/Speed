@@ -196,8 +196,6 @@ public class RequestTaskQueue {
         if(canExit() && mSpeedOption.autoExit){
             shutDown();
         }
-
-        pollRequestTaskToRunningQueue();
     }
 
     public void start(RequestTask requestTask){
