@@ -1,3 +1,3 @@
 # Speed
-正在完善使用说明
+User manual perfect
 -----------
