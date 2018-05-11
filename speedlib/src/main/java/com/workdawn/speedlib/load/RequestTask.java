@@ -298,6 +298,7 @@ public class RequestTask implements Comparable<RequestTask>{
 
     void pause(){
         status = Status.PAUSE;
+        mRequestTaskQueue.decrementRunningTaskCount();
         mRequestTaskQueue.addTaskToPauseQueue(this);
     }
 
