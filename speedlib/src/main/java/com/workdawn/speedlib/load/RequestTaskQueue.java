@@ -108,7 +108,7 @@ public class RequestTaskQueue {
         return runningTaskQueue.take();
     }
 
-    void clearCompleteTaskFromMap(RequestTask requestTask){
+    void clearCompleteTaskAndSelectNew(RequestTask requestTask){
         tasks.remove(requestTask.getUniqueId(), requestTask);
         uniqueKeys.remove(requestTask.getUrl(), requestTask.getUniqueId());
         pollRequestTaskToRunningQueue();

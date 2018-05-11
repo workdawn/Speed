@@ -260,7 +260,7 @@ public class RequestTask implements Comparable<RequestTask>{
         executorService = null;
         h = null;
         mRequestTaskQueue.decrementRunningTaskCount();
-        mRequestTaskQueue.clearCompleteTaskFromMap(this);
+        mRequestTaskQueue.clearCompleteTaskAndSelectNew(this);
     }
 
     public void processDownloadFailed(final String message){
