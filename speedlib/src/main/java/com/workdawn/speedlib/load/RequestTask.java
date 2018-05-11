@@ -237,7 +237,7 @@ public class RequestTask implements Comparable<RequestTask>{
             downloadFailedThreadCount.incrementAndGet();
         }
         if(count == 0 && downloadFailedThreadCount.get() > 0){
-            processDownloadFailed(fileName + "download failed");
+            processDownloadFailed(fileName + " download failed");
         }
     }
 

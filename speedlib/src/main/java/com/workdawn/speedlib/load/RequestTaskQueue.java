@@ -31,9 +31,9 @@ import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
 public class RequestTaskQueue {
 
     private static volatile RequestTaskQueue sRequestTaskQueue;
-    //all tasks
+    //all task
     private final ConcurrentHashMap<String, RequestTask> tasks = new ConcurrentHashMap<>();
-    //tasks uniqueIds
+    //task uniqueId
     private final ConcurrentHashMap<String, String> uniqueKeys = new ConcurrentHashMap<>();
     //running
     private final PriorityBlockingQueue<RequestTask> runningTaskQueue = new PriorityBlockingQueue<>();
