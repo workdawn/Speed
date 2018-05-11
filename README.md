@@ -100,6 +100,7 @@ public RequestTask setOnDownloadProgressChangeListener(IDownloadProgressCallback
 public RequestTask setOnDownloadResultListener(IDownloadResultCallback cb); //设置下载完成度监听器
 public RequestTask setRequestHeaders(Map<String, String> headers); //设置请求头
 public void setPriority(int priority); //设置任务优先级
+public RequestTask setSaveFile(File saveFile); //设置该下载任务的资源存放地址
 
 ```
 
