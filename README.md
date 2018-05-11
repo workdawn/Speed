@@ -1,5 +1,8 @@
+[![](https://jitpack.io/v/workdawn/Speed.svg)](https://jitpack.io/#workdawn/Speed)
+<br>
 Speed
-=
+=====
+
 一个Android端资源下载器，可以根据服务端对多线程下载的支持程度自动选择单线程下载或者多线程断点下载
 -----------
 
@@ -27,12 +30,53 @@ Speed
 
 
 如何使用
------------
+-------
 
-1.最简单的使用方式，直接调用`Speed.start(url);`或者 `Speed.start(url, fileName);`，在调用了这个方法之后，Speed就会在后台启动相应线程去下载对应url下的资源文件<br>
+1.引用方法<br>
+<br>
+1).gradle中使用<br>
+在项目根目录的build.gradle文件中，添加如下配置：
+```
+    allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+在项目module的build.gradle中添加:
+```
+    dependencies {
+	     compile 'com.github.workdawn:Speed:1.0.1'
+	}
+```
+
+2).maven中使用<br>
+<br>
+在build中添加
+```
+    <repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```
+添加依赖
+```
+    <dependency>
+	    <groupId>com.github.workdawn</groupId>
+	    <artifactId>Speed</artifactId>
+	    <version>1.0.1</version>
+	</dependency>
+```
+
+2.使用方法<br>
+<br>
+1).最简单的使用方式，直接调用`Speed.start(url);`或者 `Speed.start(url, fileName);`，在调用了这个方法之后，Speed就会在后台启动相应线程去下载对应url下的资源文件<br>
 <br>
 
-2.如果想监听下载进度怎么办？ 简单，直接在start方法后面跟上下载进度监听器即可，举例如下：
+2).如果想监听下载进度怎么办？ 简单，直接在start方法后面跟上下载进度监听器即可，举例如下：
 ```
             Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
@@ -48,7 +92,7 @@ Speed
 ```
 <br>
 
-3.如果想监听下载结果怎么办？ 也很简单可以直接在上面进度监听的后面跟上结果监听，举例如下：
+3).如果想监听下载结果怎么办？ 也很简单可以直接在上面进度监听的后面跟上结果监听，举例如下：
 ```
 Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
@@ -69,11 +113,11 @@ Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProg
             });
 ```
 
-4.暂停下载，调用`Speed.pause(url)`，只有在正在执行的任务（状态为RUNNING）或者重启状态下的任务（状态为RESUME）才能够暂停，不是这个状态的任务如果执行暂停的话没有效果，这个方法有可能会返回一个为null<br>
+4).暂停下载，调用`Speed.pause(url)`，只有在正在执行的任务（状态为RUNNING）或者重启状态下的任务（状态为RESUME）才能够暂停，不是这个状态的任务如果执行暂停的话没有效果，这个方法有可能会返回一个为null<br>
 <br>
-5.重启下载，调用`Speed.resume(url)`，只有暂停状态下的任务（状态为PAUSE)执行这个方法才有效果，否则忽略，这个方法有可能返回null<br>
+5).重启下载，调用`Speed.resume(url)`，只有暂停状态下的任务（状态为PAUSE)执行这个方法才有效果，否则忽略，这个方法有可能返回null<br>
 <br>
-6.取消下载，`Speed.cancel(url)`取消指定任务，`Speed.cancel(List<String> urls)`取消一组任务，注意组里面的任务不应该过多，`Speed.cancelAll()`取消所有任务，执行完这个方法后会退出Speed，清空任务队列，取消任务执行线程池，如果想再次启动下载需要重新初始化Speed，也就是调用`Speed.init(context) 或者 Speed.init(context, speedOption)`<br>
+6).取消下载，`Speed.cancel(url)`取消指定任务，`Speed.cancel(List<String> urls)`取消一组任务，注意组里面的任务不应该过多，`Speed.cancelAll()`取消所有任务，执行完这个方法后会退出Speed，清空任务队列，取消任务执行线程池，如果想再次启动下载需要重新初始化Speed，也就是调用`Speed.init(context) 或者 Speed.init(context, speedOption)`<br>
 <br>
 
 一些允许自定义的设置项
