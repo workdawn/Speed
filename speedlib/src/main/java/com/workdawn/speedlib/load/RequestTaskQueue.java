@@ -146,6 +146,7 @@ public class RequestTaskQueue {
 
     void addTaskToResumeQueue(RequestTask task){
         resumeTaskQueue.put(task);
+        pollRequestTaskToRunningQueue();
     }
 
     private int getCurrentRunningTaskNum() {
