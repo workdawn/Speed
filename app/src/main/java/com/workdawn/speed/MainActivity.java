@@ -2,11 +2,9 @@ package com.workdawn.speed;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.workdawn.speedlib.callback.IDownloadProgressCallback;
 import com.workdawn.speedlib.callback.IDownloadResultCallback;
@@ -15,11 +13,21 @@ import com.workdawn.speedlib.core.Speed;
 public class MainActivity extends Activity {
 
     private final static String WeChat = "http://imtt.dd.qq.com/16891/9A7CBD9CAFF7AA35E754408E2D2C6288.apk?fsname=com.tencent.mm_6.6.6_1300.apk&csr=1bbd";
-    private final static String HYS = "http://media.cmechina.net/wwwhaoyishengcom/app/app-release-version_code_28__version_name_3.3.3.apk";
+    private final static String TT = "http://a4.res.meizu.com/source/3637/a139023096aa4b3c89f9fbdb7d0cf399?sign=d38d27142a5e941b914bf349c1c62001&t=5af4830f&fname=com.ss.android.article.news_671";
+    private final static String BZ = "http://a3.res.meizu.com/source/3653/4af78c4aab7c48a18eb7fa65ba8c1a04?auth_key=1525960634-0-0-1904564795e931ccc24f17f189ee2c26&fname=com.lovebizhi.wallpaper_198";
+    private final static String WB = "http://a4.res.meizu.com/source/3651/335989b4d0594d868ee8f74538717310?sign=2fedf65086642a40c5e3eafe3a1b1387&t=5af451fd&fname=com.sina.weibo_3619";
+    private final static String QQ = "http://a3.res.meizu.com/source/3637/0e1a6a84267a4fb493bfe38c1b2ac8dd?auth_key=1525961282-0-0-ae7f6d07ca22be612933348d7f96d2ce&fname=com.tencent.mobileqq_832";
 
     private ProgressBar p_we_chat;
     private ProgressBar p_Hys;
-    private int mode = 0;
+    private ProgressBar p_wb;
+    private ProgressBar p_qq;
+    private ProgressBar p_bz;
+    private int weChatMode = 0;
+    private int hysMode = 0;
+    private int wbMode = 0;
+    private int qqMode = 0;
+    private int bzMode = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,18 +35,18 @@ public class MainActivity extends Activity {
 
         p_we_chat = (ProgressBar) findViewById(R.id.p_we_chat);
         p_Hys = (ProgressBar) findViewById(R.id.p_hys);
-        p_we_chat.setMax(100);
-        p_Hys.setMax(100);
+        p_wb = (ProgressBar) findViewById(R.id.p_wb);
+        p_qq = (ProgressBar) findViewById(R.id.p_qq);
+        p_bz = (ProgressBar) findViewById(R.id.p_bz);
     }
 
     public void weChat(final View view){
         final Button btn = (Button) view;
-        if(mode == 0){
-            //mode = 1;
+        if(weChatMode == 0){
+            weChatMode = 1;
             Speed.start(WeChat, "weChat.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
                 public void onDownloading(long totalSize, long currentSize) {
-                    Log.i("Speed",  "WeChat TotalSize = " + totalSize + " ; AlreadyDownloadedSize = " + currentSize);
                     float progress = currentSize / (totalSize * 1.0f);
                     p_we_chat.setProgress((int)(progress  * 100));
                 }
@@ -55,15 +63,15 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void onError(String reason) {
-                    Toast.makeText(MainActivity.this, "下载失败！！！" + reason, Toast.LENGTH_LONG).show();
+                    btn.setText("下载失败，点击重新下载");
                 }
             });
-        } else if(mode == 1){
-            //mode = 2;
+        } else if(weChatMode == 1){
+            weChatMode = 2;
             btn.setText("重新开始");
             Speed.pause(WeChat);
-        } else if(mode == 2){
-            //mode = 1;
+        } else if(weChatMode == 2){
+            weChatMode = 1;
             btn.setText("暂停下载");
             Speed.resume(WeChat);
         }
@@ -72,19 +80,18 @@ public class MainActivity extends Activity {
 
     public void hys(final View view){
         final Button btn = (Button) view;
-        if(mode == 0){
-            //mode = 1;
-            Speed.start(HYS, "Hys.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+        if(hysMode == 0){
+            hysMode = 1;
+            Speed.start(TT, "Tt.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
                 public void onDownloading(long totalSize, long currentSize) {
-                    //Log.i("Speed",  "Hys TotalSize = " + totalSize + " ; AlreadyDownloadedSize = " + currentSize);
                     float progress = currentSize / (totalSize * 1.0f);
                     p_Hys.setProgress((int)(progress  * 100));
                 }
 
                 @Override
                 public void onPreDownload(long totalSize) {
-                    btn.setText("退出下载");
+                    btn.setText("暂停下载");
                 }
             }).setOnDownloadResultListener(new IDownloadResultCallback() {
                 @Override
@@ -94,23 +101,129 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void onError(String reason) {
-                    Toast.makeText(MainActivity.this, "下载失败！！！" + reason, Toast.LENGTH_LONG).show();
+                    btn.setText("下载失败，点击重新下载");
                 }
             });
-        } else if(mode == 1){
-            //mode = 0;
-            btn.setText("开始下载");
-            Speed.cancel(HYS);
-        }
-        /*else if(mode == 1) {
-            mode = 2;
+        } else if(hysMode == 1) {
+            hysMode = 2;
             btn.setText("重新开始");
-            Speed.pause(HYS);
-        } else if(mode == 2){
-            mode = 1;
+            Speed.pause(TT);
+        } else if(hysMode == 2){
+            hysMode = 1;
             btn.setText("暂停下载");
-            Speed.resume(HYS);
-        }*/
+            Speed.resume(TT);
+        }
 
+    }
+
+    public void bz(View view){
+        final Button btn = (Button) view;
+        if(bzMode == 0){
+            bzMode = 1;
+            Speed.start(BZ, "Bz.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+                @Override
+                public void onDownloading(long totalSize, long currentSize) {
+                    float progress = currentSize / (totalSize * 1.0f);
+                    p_bz.setProgress((int)(progress  * 100));
+                }
+
+                @Override
+                public void onPreDownload(long totalSize) {
+                    btn.setText("暂停下载");
+                }
+            }).setOnDownloadResultListener(new IDownloadResultCallback() {
+                @Override
+                public void onComplete(String filePath) {
+                    btn.setText("下载完成:" + filePath);
+                }
+
+                @Override
+                public void onError(String reason) {
+                    btn.setText("下载失败，点击重新下载");
+                }
+            });
+        } else if(bzMode == 1){
+            bzMode = 2;
+            btn.setText("重新开始");
+            Speed.pause(BZ);
+        } else if(bzMode == 2){
+            bzMode = 1;
+            btn.setText("暂停下载");
+            Speed.resume(BZ);
+        }
+    }
+
+    public void wb(View view){
+        final Button btn = (Button) view;
+        if(wbMode == 0){
+            wbMode = 1;
+            Speed.start(WB, "Wb.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+                @Override
+                public void onDownloading(long totalSize, long currentSize) {
+                    float progress = currentSize / (totalSize * 1.0f);
+                    p_wb.setProgress((int)(progress  * 100));
+                }
+
+                @Override
+                public void onPreDownload(long totalSize) {
+                    btn.setText("暂停下载");
+                }
+            }).setOnDownloadResultListener(new IDownloadResultCallback() {
+                @Override
+                public void onComplete(String filePath) {
+                    btn.setText("下载完成:" + filePath);
+                }
+
+                @Override
+                public void onError(String reason) {
+                    btn.setText("下载失败，点击重新下载");
+                }
+            });
+        } else if(wbMode == 1){
+            wbMode = 2;
+            btn.setText("重新开始");
+            Speed.pause(WB);
+        } else if(wbMode == 2){
+            wbMode = 1;
+            btn.setText("暂停下载");
+            Speed.resume(WB);
+        }
+    }
+
+    public void qq(View view){
+        final Button btn = (Button) view;
+        if(qqMode == 0){
+            qqMode = 1;
+            Speed.start(QQ, "qq.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+                @Override
+                public void onDownloading(long totalSize, long currentSize) {
+                    float progress = currentSize / (totalSize * 1.0f);
+                    p_qq.setProgress((int)(progress  * 100));
+                }
+
+                @Override
+                public void onPreDownload(long totalSize) {
+                    btn.setText("暂停下载");
+                }
+            }).setOnDownloadResultListener(new IDownloadResultCallback() {
+                @Override
+                public void onComplete(String filePath) {
+                    btn.setText("下载完成:" + filePath);
+                }
+
+                @Override
+                public void onError(String reason) {
+                    btn.setText("下载失败，点击重新下载");
+                }
+            });
+        } else if(qqMode == 1){
+            qqMode = 2;
+            btn.setText("重新开始");
+            Speed.pause(QQ);
+        } else if(qqMode == 2){
+            qqMode = 1;
+            btn.setText("暂停下载");
+            Speed.resume(QQ);
+        }
     }
 }
