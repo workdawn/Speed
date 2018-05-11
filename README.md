@@ -19,7 +19,14 @@ Speed
 11.更多详见项目
 
 效果展示(稍后添加)
------------
+----------
+
+![download_gif_1](https://github.com/workdawn/Speed/raw/master/gif/1.gif) &nbsp; &nbsp; ![download_gif_2](https://github.com/workdawn/Speed/raw/master/gif/2.gif)
+
+![download_gif_3](https://github.com/workdawn/Speed/raw/master/gif/3.gif) &nbsp; &nbsp; ![download_gif_4](https://github.com/workdawn/Speed/raw/master/gif/4.gif)
+
+![download_gif_5](https://github.com/workdawn/Speed/raw/master/gif/5.gif) &nbsp; &nbsp; ![download_gif_6](https://github.com/workdawn/Speed/raw/master/gif/6.gif)
+
 
 如何使用
 -----------
