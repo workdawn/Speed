@@ -50,7 +50,8 @@ public class RequestTask implements Comparable<RequestTask>{
     private NotificationManagerCenter managerCenter = null;
     private long sendMsgTime = 0L;
     private long sendNotificationTime = 0L;
-    private final static int UPDATE_THRESHOLD = 500;
+    private final static int MESSAGE_UPDATE_THRESHOLD = 500;
+    private final static int NOTIFICATION_UPDATE_THRESHOLD = 2 * 1000;
     private File saveFile;
     private Map<String, String> headers;
 
@@ -81,7 +82,7 @@ public class RequestTask implements Comparable<RequestTask>{
         switch (what) {
             case HANDLE_DOWNLOAD:
                 DownloadCallback d = (DownloadCallback) o;
-                if(System.currentTimeMillis() - sendMsgTime > UPDATE_THRESHOLD
+                if(System.currentTimeMillis() - sendMsgTime > MESSAGE_UPDATE_THRESHOLD
                         || d.getTotalBytes() == d.getAlreadyDownloadedBytes()){
                     sendMsgTime = System.currentTimeMillis();
                     h.obtainMessage(what, o).sendToTarget();
@@ -94,7 +95,7 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     public void sendNotification(long totalSize , long alreadyDownloadSize){
-        if(System.currentTimeMillis() - sendNotificationTime > UPDATE_THRESHOLD
+        if(System.currentTimeMillis() - sendNotificationTime > NOTIFICATION_UPDATE_THRESHOLD
                 || totalSize == alreadyDownloadSize){
             sendNotificationTime = System.currentTimeMillis();
             if (managerCenter != null) {
