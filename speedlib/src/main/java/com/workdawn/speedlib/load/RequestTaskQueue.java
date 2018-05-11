@@ -108,9 +108,13 @@ public class RequestTaskQueue {
         return runningTaskQueue.take();
     }
 
-    void pollRequestTaskToRunningQueue(RequestTask requestTask){
+    void clearCompleteTaskFromMap(RequestTask requestTask){
         tasks.remove(requestTask.getUniqueId(), requestTask);
         uniqueKeys.remove(requestTask.getUrl(), requestTask.getUniqueId());
+        pollRequestTaskToRunningQueue();
+    }
+
+    void pollRequestTaskToRunningQueue(){
         if(resumeTaskQueue.size() > 0){
             if(getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum) {
                 runningTaskQueue.put(resumeTaskQueue.poll());
@@ -129,13 +133,14 @@ public class RequestTaskQueue {
 
     void addTaskToPauseQueue(RequestTask requestTask){
         pauseTaskQueue.put(requestTask);
+        pollRequestTaskToRunningQueue();
     }
 
     void addPauseTaskToResumeQueue(){
         if(pauseTaskQueue.size() > 0){
             RequestTask task = pauseTaskQueue.poll();
             addTaskToResumeQueue(task);
-            pollRequestTaskToRunningQueue(task);
+            pollRequestTaskToRunningQueue();
         }
     }
 
@@ -190,6 +195,8 @@ public class RequestTaskQueue {
         if(canExit() && mSpeedOption.autoExit){
             shutDown();
         }
+
+        pollRequestTaskToRunningQueue();
     }
 
     public void start(RequestTask requestTask){
