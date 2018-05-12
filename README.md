@@ -117,7 +117,7 @@ Speed.start(url, fileName).setOnDownloadProgressChangeListener(new IDownloadProg
 <br>
 5).重启下载，调用`Speed.resume(url)`，只有暂停状态下的任务（状态为PAUSE)执行这个方法才有效果，否则忽略，这个方法有可能返回null<br>
 <br>
-6).取消下载，`Speed.cancel(url)`取消指定任务，`Speed.cancel(List<String> urls)`取消一组任务，注意组里面的任务不应该过多，`Speed.cancelAll()`取消所有任务，执行完这个方法后会退出Speed，清空任务队列，取消任务执行线程池，如果想再次启动下载需要重新初始化Speed，也就是调用`Speed.init(context) 或者 Speed.init(context, speedOption)`<br>
+6).取消下载，`Speed.cancel(url)`取消指定任务，`Speed.cancel(List<String> urls)`取消一组任务，注意组里面的任务不应该过多，`Speed.cancelAll()`取消所有任务<br>
 <br>
 
 一些允许自定义的设置项
