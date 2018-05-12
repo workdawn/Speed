@@ -209,6 +209,7 @@ public class Speed {
      */
     public static void cancel(List<String> urls){
         checkInit();
+        Preconditions.checkArgument((urls != null && urls.size() > 0), "task urls must not be null");
         List<RequestTask> tasks = new ArrayList<>();
         for (String url : urls) {
             String uniqueId = sRequestTaskQueue.getUniqueKey(url);
