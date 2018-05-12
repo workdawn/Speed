@@ -231,7 +231,8 @@ public class Speed {
     }
 
     /**
-     * Exit speed framework
+     * Exit speed framework, When this method is called, the speed framework will completely exit.
+     * If you want to use speed again, please call {@link #init(Context)} or {@link #init(Context, SpeedOption)} first.
      */
     public static void quit(){
         checkInit();
