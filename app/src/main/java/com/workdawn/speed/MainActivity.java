@@ -12,6 +12,7 @@ import com.workdawn.speedlib.core.Speed;
 
 public class MainActivity extends Activity {
 
+    //Download link may fail, if it fails, please add new address
     private final static String WeChat = "http://imtt.dd.qq.com/16891/9A7CBD9CAFF7AA35E754408E2D2C6288.apk?fsname=com.tencent.mm_6.6.6_1300.apk&csr=1bbd";
     private final static String TT = "http://a4.res.meizu.com/source/3637/a139023096aa4b3c89f9fbdb7d0cf399?sign=d38d27142a5e941b914bf349c1c62001&t=5af4830f&fname=com.ss.android.article.news_671";
     private final static String BZ = "http://a3.res.meizu.com/source/3653/4af78c4aab7c48a18eb7fa65ba8c1a04?auth_key=1525960634-0-0-1904564795e931ccc24f17f189ee2c26&fname=com.lovebizhi.wallpaper_198";
@@ -225,5 +226,13 @@ public class MainActivity extends Activity {
             btn.setText("暂停下载");
             Speed.resume(QQ);
         }
+    }
+
+    public void cancelAll(View view){
+        Speed.cancelAll();
+    }
+
+    public void quit(View view){
+        Speed.quit();
     }
 }
