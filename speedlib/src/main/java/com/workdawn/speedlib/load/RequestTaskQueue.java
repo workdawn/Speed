@@ -197,6 +197,7 @@ public class RequestTaskQueue {
         if(uniqueKeys.containsKey(requestTask.getUrl())){
             uniqueKeys.remove(requestTask.getUrl(), requestTask.getUniqueId());
         }
+        currentRunningTasks.remove(requestTask.hashCode());
         autoQuit();
     }
 
@@ -277,6 +278,7 @@ public class RequestTaskQueue {
         for (Future future : futures) {
             future.cancel(true);
         }
+        futures.clear();
         ExecutorManager.newInstance().getBackgroundExecutor().shutdown();
         if(database != null){
             database.close();
