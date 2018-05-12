@@ -278,12 +278,10 @@ public class RequestTaskQueue {
             future.cancel(true);
         }
         ExecutorManager.newInstance().getBackgroundExecutor().shutdown();
-
         if(database != null){
             database.close();
             database = null;
         }
-
         sRequestTaskQueue = null;
         mSpeedOption = null;
         DISPATCHER_INIT = false;

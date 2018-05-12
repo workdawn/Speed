@@ -50,8 +50,10 @@ public class RequestTask implements Comparable<RequestTask>{
     private NotificationManagerCenter managerCenter = null;
     private long sendMsgTime = 0L;
     private long sendNotificationTime = 0L;
+
     private final static int MESSAGE_UPDATE_THRESHOLD = 500;
     private final static int NOTIFICATION_UPDATE_THRESHOLD = 2 * 1000;
+
     private File saveFile;
     private Map<String, String> headers;
 

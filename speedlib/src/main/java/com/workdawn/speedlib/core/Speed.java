@@ -69,6 +69,10 @@ public class Speed {
         return sDefaultOption.httpClientFactory.create();
     }
 
+    /**
+     * Get SpeedOption
+     * @return SpeedOption
+     */
     public static SpeedOption getSpeedOption(){
         checkInit();
         return sDefaultOption;
