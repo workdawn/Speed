@@ -218,12 +218,20 @@ public class Speed {
 
     /**
      * Cancel all requestTask
-     * This method will empty all task queues and exit Speed, if you want to start over, please call {@link #init(Context)} first
+     * This method will empty all task queues
      */
-    public static void cancleAll(){
+    public static void cancelAll(){
         checkInit();
         sRequestTaskQueue.cancelAll();
         isInit = false;
+    }
+
+    /**
+     * Exit speed framework
+     */
+    public static void quit(){
+        checkInit();
+        sRequestTaskQueue.quit();
     }
 
     /**

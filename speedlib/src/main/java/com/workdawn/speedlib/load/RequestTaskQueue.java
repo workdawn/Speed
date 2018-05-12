@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.SparseArray;
 
 import com.workdawn.speedlib.Status;
 import com.workdawn.speedlib.core.Speed;
@@ -41,6 +42,8 @@ public class RequestTaskQueue {
     private final PriorityBlockingQueue<RequestTask> resumeTaskQueue = new PriorityBlockingQueue<>();
     //wait to resume
     private final PriorityBlockingQueue<RequestTask> pauseTaskQueue = new PriorityBlockingQueue<>();
+    //current running task collection
+    private final SparseArray<RequestTask> currentRunningTasks = new SparseArray<>();
 
     private NetworkListenerBroadcastReceiver networkListenerBroadcastReceiver = null;
     private SpeedOption mSpeedOption;
@@ -78,12 +81,14 @@ public class RequestTaskQueue {
         uniqueKeys.put(url, uniqueId);
     }
 
-    void incrementRunningTaskCount(){
+    void incrementRunningTaskCount(RequestTask requestTask){
         currentRunningTaskCount.incrementAndGet();
+        currentRunningTasks.put(requestTask.hashCode(), requestTask);
     }
 
-    void decrementRunningTaskCount(){
+    void decrementRunningTaskCount(RequestTask requestTask){
         currentRunningTaskCount.decrementAndGet();
+        currentRunningTasks.remove(requestTask.hashCode());
     }
 
     void setDispatcher(Dispatcher dispatcher){
@@ -120,8 +125,8 @@ public class RequestTaskQueue {
                 runningTaskQueue.put(resumeTaskQueue.poll());
             }
         }else {
-            if(canExit() && mSpeedOption.autoExit){
-                shutDown();
+            if (canExit() && mSpeedOption.autoExit) {
+                autoQuit();
             }
         }
     }
@@ -192,9 +197,12 @@ public class RequestTaskQueue {
         if(uniqueKeys.containsKey(requestTask.getUrl())){
             uniqueKeys.remove(requestTask.getUrl(), requestTask.getUniqueId());
         }
+        autoQuit();
+    }
 
+    private void autoQuit(){
         if(canExit() && mSpeedOption.autoExit){
-            shutDown();
+            quit();
         }
     }
 
@@ -232,16 +240,34 @@ public class RequestTaskQueue {
         ExecutorManager.newInstance().getBackgroundExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                for (RequestTask requestTask : runningTaskQueue) {
-                    requestTask.setStatus(Status.CANCEL);
+                int runningTasks = getCurrentRunningTaskNum();
+                if(runningTasks > 0 && currentRunningTasks.size() > 0){
+                    int len = currentRunningTasks.size();
+                    for(int i = 0; i < len; i++){
+                        RequestTask task = currentRunningTasks.valueAt(i);
+                        task.setStatus(Status.CANCEL);
+                    }
                 }
-                shutDown();
+
+                tasks.clear();
+                uniqueKeys.clear();
+                runningTaskQueue.clear();
+                resumeTaskQueue.clear();
+                pauseTaskQueue.clear();
+                currentRunningTasks.clear();
+
             }
         });
     }
 
     void dispatchNetworkChange(NetworkInfo info){
         Utils.adjustMaxRunningTaskCount(info, mSpeedOption);
+    }
+
+    public void quit(){
+        dispatcher.setExit(true);
+        cancelAll();
+        shutDown();
     }
 
     private void shutDown(){
@@ -252,16 +278,12 @@ public class RequestTaskQueue {
             future.cancel(true);
         }
         ExecutorManager.newInstance().getBackgroundExecutor().shutdown();
-        tasks.clear();
-        uniqueKeys.clear();
-        runningTaskQueue.clear();
-        resumeTaskQueue.clear();
-        pauseTaskQueue.clear();
+
         if(database != null){
             database.close();
             database = null;
         }
-        dispatcher.setExit(true);
+
         sRequestTaskQueue = null;
         mSpeedOption = null;
         DISPATCHER_INIT = false;

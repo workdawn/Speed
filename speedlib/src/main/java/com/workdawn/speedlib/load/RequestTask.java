@@ -259,7 +259,7 @@ public class RequestTask implements Comparable<RequestTask>{
         downloadResultCallback = null;
         executorService = null;
         h = null;
-        mRequestTaskQueue.decrementRunningTaskCount();
+        mRequestTaskQueue.decrementRunningTaskCount(this);
         mRequestTaskQueue.clearCompleteTaskAndSelectNew(this);
     }
 
@@ -276,7 +276,7 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     private void putFailedTaskToResumeQueue(){
-        mRequestTaskQueue.decrementRunningTaskCount();
+        mRequestTaskQueue.decrementRunningTaskCount(this);
         status = Status.RESUME;
         priority = FAILED_TASK_PRIORITY;
         mRequestTaskQueue.addTaskToResumeQueue(this);
@@ -298,7 +298,7 @@ public class RequestTask implements Comparable<RequestTask>{
 
     void pause(){
         status = Status.PAUSE;
-        mRequestTaskQueue.decrementRunningTaskCount();
+        mRequestTaskQueue.decrementRunningTaskCount(this);
         mRequestTaskQueue.addTaskToPauseQueue(this);
     }
 
@@ -315,7 +315,7 @@ public class RequestTask implements Comparable<RequestTask>{
 
     public void run(){
         status = Status.RUNNING;
-        mRequestTaskQueue.incrementRunningTaskCount();
+        mRequestTaskQueue.incrementRunningTaskCount(this);
         mRequestTaskQueue.addFuture(executorManager.getBackgroundExecutor().submit(new RequestRunnable(this, mRequestTaskQueue.getDatabase())));
     }
 }
