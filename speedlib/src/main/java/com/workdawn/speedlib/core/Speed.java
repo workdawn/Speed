@@ -85,7 +85,7 @@ public class Speed {
     /**
      * Start download task
      * @param url resource download address
-     * @param fileName resource name
+     * @param fileName file name with extension
      * @return requestTask or null
      */
     public static RequestTask start(String url, String fileName){
@@ -112,9 +112,10 @@ public class Speed {
         } else {
             if(Utils.isStringEmpty(fileName)){
                 fileName = url.substring(url.lastIndexOf("/") + 1);
-                if(!fileName.contains(".")){
-                    fileName = fileName +  "_" +UUID.randomUUID().toString() + ".tmp";
+                if(fileName.length() > 20){
+                    fileName = fileName.substring(0, 15);
                 }
+                fileName = fileName + "_" + UUID.randomUUID().toString() + ".tmp";
             }
             task = new RequestTask(sContext, url, fileName, uniqueId, sDefaultOption);
             task.setRequestTaskQueue(sRequestTaskQueue);

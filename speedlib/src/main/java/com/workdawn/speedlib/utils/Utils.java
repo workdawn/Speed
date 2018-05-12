@@ -39,10 +39,18 @@ public class Utils {
             byte[] b = MessageDigest.getInstance("MD5").digest(url.getBytes("UTF-8"));
             return new String(b);
         } catch (NoSuchAlgorithmException e) {
-            return UUID.fromString(url).toString();
+            return generateKeyWhenFailed(url);
         } catch (UnsupportedEncodingException e) {
-            return UUID.fromString(url).toString();
+            return generateKeyWhenFailed(url);
         }
+    }
+
+    static String generateKeyWhenFailed(String url){
+        String linkTail = url.substring(url.lastIndexOf("/") + 1);
+        if(linkTail.length() > 20){
+            linkTail = linkTail.substring(0, 20);
+        }
+        return linkTail + UUID.randomUUID().toString();
     }
 
     public static boolean isStringEmpty(String str){
