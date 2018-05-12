@@ -60,7 +60,7 @@ Speed
 在项目module的build.gradle中添加:
 ```
     dependencies {
-	     compile 'com.github.workdawn:Speed:1.0.1'
+	     compile 'com.github.workdawn:Speed:1.0.3'
 	}
 ```
 
@@ -80,7 +80,7 @@ Speed
     <dependency>
 	    <groupId>com.github.workdawn</groupId>
 	    <artifactId>Speed</artifactId>
-	    <version>1.0.1</version>
+	    <version>1.0.3</version>
 	</dependency>
 ```
 
