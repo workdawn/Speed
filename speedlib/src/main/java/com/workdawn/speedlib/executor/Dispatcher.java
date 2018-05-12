@@ -2,6 +2,7 @@ package com.workdawn.speedlib.executor;
 
 import com.workdawn.speedlib.load.RequestTask;
 import com.workdawn.speedlib.load.RequestTaskQueue;
+import com.workdawn.speedlib.utils.LogUtils;
 
 /**
  * Created on 2018/4/27.
@@ -29,6 +30,7 @@ public class Dispatcher implements Runnable{
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 exit = true;
+                LogUtils.i("Dispatcher is exit");
             }
         }
     }

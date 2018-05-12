@@ -227,8 +227,7 @@ public class Speed {
      */
     public static void cancelAll(){
         checkInit();
-        sRequestTaskQueue.cancelAll();
-        isInit = false;
+        sRequestTaskQueue.cancelAll(false);
     }
 
     /**
@@ -236,8 +235,10 @@ public class Speed {
      * If you want to use speed again, please call {@link #init(Context)} or {@link #init(Context, SpeedOption)} first.
      */
     public static void quit(){
-        checkInit();
-        sRequestTaskQueue.quit();
+        if(sRequestTaskQueue != null){
+            sRequestTaskQueue.quit();
+            isInit = false;
+        }
     }
 
     /**

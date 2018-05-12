@@ -237,26 +237,14 @@ public class RequestTaskQueue {
         }
     }
 
-    public void cancelAll(){
+    public void cancelAll(final boolean isQuit){
         ExecutorManager.newInstance().getBackgroundExecutor().submit(new Runnable() {
             @Override
             public void run() {
-                int runningTasks = getCurrentRunningTaskNum();
-                if(runningTasks > 0 && currentRunningTasks.size() > 0){
-                    int len = currentRunningTasks.size();
-                    for(int i = 0; i < len; i++){
-                        RequestTask task = currentRunningTasks.valueAt(i);
-                        task.setStatus(Status.CANCEL);
-                    }
+                cancelAllTask();
+                if(isQuit){
+                    shutDown();
                 }
-
-                tasks.clear();
-                uniqueKeys.clear();
-                runningTaskQueue.clear();
-                resumeTaskQueue.clear();
-                pauseTaskQueue.clear();
-                currentRunningTasks.clear();
-
             }
         });
     }
@@ -265,10 +253,27 @@ public class RequestTaskQueue {
         Utils.adjustMaxRunningTaskCount(info, mSpeedOption);
     }
 
+    private void cancelAllTask(){
+        int runningTasks = getCurrentRunningTaskNum();
+        if(runningTasks > 0 && currentRunningTasks.size() > 0){
+            int len = currentRunningTasks.size();
+            for(int i = 0; i < len; i++){
+                RequestTask task = currentRunningTasks.get(currentRunningTasks.keyAt(i));
+                cancel(task);
+            }
+        }
+
+        tasks.clear();
+        uniqueKeys.clear();
+        runningTaskQueue.clear();
+        resumeTaskQueue.clear();
+        pauseTaskQueue.clear();
+        currentRunningTasks.clear();
+    }
+
     public void quit(){
         dispatcher.setExit(true);
-        cancelAll();
-        shutDown();
+        cancelAll(true);
     }
 
     private void shutDown(){
