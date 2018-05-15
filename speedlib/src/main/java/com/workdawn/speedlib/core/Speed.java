@@ -93,7 +93,7 @@ public class Speed {
         return realStart(url, fileName);
     }
 
-    static RequestTask realStart(String url, String fileName){
+    private static RequestTask realStart(String url, String fileName){
         Preconditions.checkArgument(Utils.isUrlCorrect(url), "Incorrect address " + url);
         String uniqueId = sRequestTaskQueue.getUniqueKey(url);
         if(Utils.isStringEmpty(uniqueId)){
