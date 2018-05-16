@@ -66,18 +66,14 @@ public class RequestTask implements Comparable<RequestTask>{
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case HANDLE_DOWNLOAD:
-                    if(downloadProgressCallback != null){
-                        DownloadCallback downloadCallback = (DownloadCallback) msg.obj;
-                        long alreadyDownloadSize = downloadCallback.getAlreadyDownloadedBytes();
-                        long totalSize = downloadCallback.getTotalBytes();
-                        downloadProgressCallback.onDownloading(totalSize, alreadyDownloadSize);
-                    }
+                    DownloadCallback downloadCallback = (DownloadCallback) msg.obj;
+                    long alreadyDownloadSize = downloadCallback.getAlreadyDownloadedBytes();
+                    long totalSize = downloadCallback.getTotalBytes();
+                    downloadProgressCallback.onDownloading(totalSize, alreadyDownloadSize);
                     break;
                 case HANDLE_PRE_DOWNLOAD:
-                    if(downloadProgressCallback != null){
-                        long totalSize = (long) msg.obj;
-                        downloadProgressCallback.onPreDownload(totalSize);
-                    }
+                    long totalS = (long) msg.obj;
+                    downloadProgressCallback.onPreDownload(totalS);
                     break;
             }
             return false;
@@ -85,18 +81,20 @@ public class RequestTask implements Comparable<RequestTask>{
     });
 
     public void sendMessage(int what, Object o){
-        switch (what) {
-            case HANDLE_DOWNLOAD:
-                DownloadCallback d = (DownloadCallback) o;
-                if(System.currentTimeMillis() - sendMsgTime > MESSAGE_UPDATE_THRESHOLD
-                        || d.getTotalBytes() == d.getAlreadyDownloadedBytes()){
-                    sendMsgTime = System.currentTimeMillis();
+        if(downloadProgressCallback != null){
+            switch (what) {
+                case HANDLE_DOWNLOAD:
+                    DownloadCallback d = (DownloadCallback) o;
+                    if(System.currentTimeMillis() - sendMsgTime > MESSAGE_UPDATE_THRESHOLD
+                            || d.getTotalBytes() == d.getAlreadyDownloadedBytes()){
+                        sendMsgTime = System.currentTimeMillis();
+                        h.obtainMessage(what, o).sendToTarget();
+                    }
+                    break;
+                case HANDLE_PRE_DOWNLOAD:
                     h.obtainMessage(what, o).sendToTarget();
-                }
-                break;
-            case HANDLE_PRE_DOWNLOAD:
-                h.obtainMessage(what, o).sendToTarget();
-                break;
+                    break;
+            }
         }
     }
 
