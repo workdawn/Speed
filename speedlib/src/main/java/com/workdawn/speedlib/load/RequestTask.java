@@ -47,6 +47,7 @@ public class RequestTask implements Comparable<RequestTask>{
     public final static int HANDLE_PRE_DOWNLOAD = 311;
     private final static int RE_START_PRIORITY = 1;
     private final static int FAILED_TASK_PRIORITY = 2;
+    private final static int NORMAL_TASK_PRIORITY = 0;
     private NotificationManagerCenter managerCenter = null;
     private long sendMsgTime = 0L;
     private long sendNotificationTime = 0L;
@@ -289,6 +290,7 @@ public class RequestTask implements Comparable<RequestTask>{
             taskFailedNum ++;
         } else {
             status = Status.PAUSE;
+            priority = NORMAL_TASK_PRIORITY;
             mRequestTaskQueue.addTaskToPauseQueue(this);
             taskFailedNum = 0;
         }
