@@ -9,6 +9,8 @@ import android.net.NetworkInfo;
 import android.util.SparseArray;
 
 import com.workdawn.speedlib.Status;
+import com.workdawn.speedlib.callback.ITaskGroupDownloadProgressCallback;
+import com.workdawn.speedlib.callback.ITaskGroupDownloadResultCallback;
 import com.workdawn.speedlib.core.Speed;
 import com.workdawn.speedlib.core.SpeedOption;
 import com.workdawn.speedlib.db.IDatabase;
@@ -57,6 +59,9 @@ public class RequestTaskQueue {
     volatile static boolean DISPATCHER_INIT = false;
 
     private Dispatcher dispatcher;
+
+    private ITaskGroupDownloadProgressCallback progressCallback = null;
+    private ITaskGroupDownloadResultCallback resultCallback = null;
 
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
@@ -185,6 +190,29 @@ public class RequestTaskQueue {
             requestTask.setStatus(Status.RESUME);
             resumeTaskQueue.put(requestTask);
         }
+    }
+
+    public RequestTaskQueue setOnTaskGroupDownloadProgressListener(ITaskGroupDownloadProgressCallback progressListener){
+        this.progressCallback = progressListener;
+        return this;
+    }
+
+    public RequestTaskQueue setOnTaskQueueDownloadResultListener(ITaskGroupDownloadResultCallback resultListener){
+        this.resultCallback = resultListener;
+        return this;
+    }
+
+    public ITaskGroupDownloadProgressCallback getProgressCallback() {
+        return progressCallback;
+    }
+
+    public ITaskGroupDownloadResultCallback getResultCallback() {
+        return resultCallback;
+    }
+
+    public void clearTaskQueueCallback(){
+        progressCallback = null;
+        resultCallback = null;
     }
 
     void removeRequestTask(RequestTask requestTask){

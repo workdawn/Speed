@@ -90,6 +90,10 @@ public class Speed {
      */
     public static RequestTask start(String url, String fileName){
         checkInit();
+        return realStart(url, fileName);
+    }
+
+    static RequestTask realStart(String url, String fileName){
         Preconditions.checkArgument(Utils.isUrlCorrect(url), "Incorrect address " + url);
         String uniqueId = sRequestTaskQueue.getUniqueKey(url);
         if(Utils.isStringEmpty(uniqueId)){
@@ -139,7 +143,6 @@ public class Speed {
      * @return taskQueue
      */
     public static RequestTaskQueue start(ArrayList<String> urls){
-        //// TODO: 2018/5/16 intend
         return start(urls, null);
     }
 
@@ -150,8 +153,21 @@ public class Speed {
      * @return taskQueue
      */
     public static RequestTaskQueue start(ArrayList<String> urls, ArrayList<String> fileNames){
-        //// TODO: 2018/5/16 intend
-        return null;
+        checkInit();
+        Preconditions.checkArgument(urls != null && urls.size() > 0, "Group of task urls is empty");
+        if(fileNames != null){
+            Preconditions.checkArgument(urls.size() == fileNames.size(), "The task address should correspond to the task name");
+        }
+        int len = urls.size();
+        for(int i = 0; i < len; i ++){
+            String url = urls.get(i);
+            String fileName = null;
+            if(fileNames != null){
+                fileName = fileNames.get(i);
+            }
+            realStart(url, fileName);
+        }
+        return sRequestTaskQueue;
     }
 
     /**

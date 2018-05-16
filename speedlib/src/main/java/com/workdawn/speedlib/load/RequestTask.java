@@ -69,11 +69,17 @@ public class RequestTask implements Comparable<RequestTask>{
                     DownloadCallback downloadCallback = (DownloadCallback) msg.obj;
                     long alreadyDownloadSize = downloadCallback.getAlreadyDownloadedBytes();
                     long totalSize = downloadCallback.getTotalBytes();
-                    downloadProgressCallback.onDownloading(totalSize, alreadyDownloadSize);
+                    if(mRequestTaskQueue.getProgressCallback() != null){
+                        mRequestTaskQueue.getProgressCallback().onTasksDownloading(RequestTask.this.url, totalSize, alreadyDownloadSize);
+                    } else if(downloadProgressCallback != null){
+                        downloadProgressCallback.onDownloading(totalSize, alreadyDownloadSize);
+                    }
                     break;
                 case HANDLE_PRE_DOWNLOAD:
                     long totalS = (long) msg.obj;
-                    downloadProgressCallback.onPreDownload(totalS);
+                    if(downloadProgressCallback != null){
+                        downloadProgressCallback.onPreDownload(totalS);
+                    }
                     break;
             }
             return false;
@@ -81,7 +87,7 @@ public class RequestTask implements Comparable<RequestTask>{
     });
 
     public void sendMessage(int what, Object o){
-        if(downloadProgressCallback != null){
+        if(downloadProgressCallback != null || mRequestTaskQueue.getProgressCallback() != null){
             switch (what) {
                 case HANDLE_DOWNLOAD:
                     DownloadCallback d = (DownloadCallback) o;
@@ -249,7 +255,9 @@ public class RequestTask implements Comparable<RequestTask>{
         ExecutorManager.newInstance().getCallbackExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                if (downloadResultCallback != null) {
+                if(mRequestTaskQueue.getResultCallback() != null){
+                    mRequestTaskQueue.getResultCallback().onTaskComplete(url, filePath);
+                } else if (downloadResultCallback != null) {
                     downloadResultCallback.onComplete(filePath);
                 }
                 clear();
@@ -271,7 +279,9 @@ public class RequestTask implements Comparable<RequestTask>{
         ExecutorManager.newInstance().getCallbackExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                if (downloadResultCallback != null) {
+                if(mRequestTaskQueue.getResultCallback() != null){
+                    mRequestTaskQueue.getResultCallback().onTaskError(url, message);
+                } else if (downloadResultCallback != null) {
                     downloadResultCallback.onError(message);
                 }
                 handleFailedTask();
