@@ -50,6 +50,9 @@ public class RequestTask implements Comparable<RequestTask>{
     private NotificationManagerCenter managerCenter = null;
     private long sendMsgTime = 0L;
     private long sendNotificationTime = 0L;
+    //the number of task failures
+    private int taskFailedNum = 0;
+    private final static int MAX_ALLOW_TASK_FAILED_NUM = 3;
 
     private final static int MESSAGE_UPDATE_THRESHOLD = 500;
     private final static int NOTIFICATION_UPDATE_THRESHOLD = 2 * 1000;
@@ -279,9 +282,16 @@ public class RequestTask implements Comparable<RequestTask>{
 
     private void putFailedTaskToResumeQueue(){
         mRequestTaskQueue.decrementRunningTaskCount(this);
-        status = Status.RESUME;
-        priority = FAILED_TASK_PRIORITY;
-        mRequestTaskQueue.addTaskToResumeQueue(this);
+        if(taskFailedNum < MAX_ALLOW_TASK_FAILED_NUM){
+            status = Status.RESUME;
+            priority = FAILED_TASK_PRIORITY;
+            mRequestTaskQueue.addTaskToResumeQueue(this);
+            taskFailedNum ++;
+        } else {
+            status = Status.PAUSE;
+            mRequestTaskQueue.addTaskToPauseQueue(this);
+            taskFailedNum = 0;
+        }
     }
 
     void start(){
