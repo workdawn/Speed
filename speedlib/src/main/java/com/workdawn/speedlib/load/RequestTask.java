@@ -276,12 +276,12 @@ public class RequestTask implements Comparable<RequestTask>{
                 if (downloadResultCallback != null) {
                     downloadResultCallback.onError(message);
                 }
-                putFailedTaskToResumeQueue();
+                putFailedTask();
             }
         });
     }
 
-    private void putFailedTaskToResumeQueue(){
+    private void putFailedTask(){
         mRequestTaskQueue.decrementRunningTaskCount(this);
         if(taskFailedNum < MAX_ALLOW_TASK_FAILED_NUM){
             status = Status.RESUME;
