@@ -134,6 +134,27 @@ public class Speed {
     }
 
     /**
+     * Start a group of tasks
+     * @param urls tasks url
+     * @return taskQueue
+     */
+    public static RequestTaskQueue start(ArrayList<String> urls){
+        //// TODO: 2018/5/16 intend
+        return start(urls, null);
+    }
+
+    /**
+     * Start a group of tasks
+     * @param urls tasks url
+     * @param fileNames tasks file name
+     * @return taskQueue
+     */
+    public static RequestTaskQueue start(ArrayList<String> urls, ArrayList<String> fileNames){
+        //// TODO: 2018/5/16 intend
+        return null;
+    }
+
+    /**
      * Pause requestTask
      * @param url resource download address
      * @return requestTask or null

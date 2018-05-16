@@ -121,7 +121,7 @@ public class RequestTaskQueue {
 
     private void pollRequestTaskToRunningQueue(){
         if(resumeTaskQueue.size() > 0){
-            if(getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum) {
+            if(canPutTaskToRunningQueue()) {
                 runningTaskQueue.put(resumeTaskQueue.poll());
             }
         }else {
@@ -158,6 +158,10 @@ public class RequestTaskQueue {
         return runningTaskQueue.size() + currentRunningTaskCount.get();
     }
 
+    private boolean canPutTaskToRunningQueue(){
+        return getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum;
+    }
+
     IDatabase getDatabase(){
         if(database == null){
             synchronized (RequestTaskQueue.class) {
@@ -175,7 +179,7 @@ public class RequestTaskQueue {
 
     void addTaskToResumeOrRunningQueue(RequestTask requestTask) {
         tasks.put(requestTask.getUniqueId(), requestTask);
-        if(getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum){
+        if(canPutTaskToRunningQueue()){
             runningTaskQueue.put(requestTask);
         } else {
             requestTask.setStatus(Status.RESUME);
@@ -212,7 +216,7 @@ public class RequestTaskQueue {
     }
 
     public void reStart(RequestTask requestTask){
-        if(getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum){
+        if(canPutTaskToRunningQueue()){
             runningTaskQueue.put(requestTask);
         } else {
             requestTask.reStart();
