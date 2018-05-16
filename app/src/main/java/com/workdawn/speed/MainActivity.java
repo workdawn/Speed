@@ -2,19 +2,24 @@ package com.workdawn.speed;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.workdawn.speedlib.callback.IDownloadProgressCallback;
 import com.workdawn.speedlib.callback.IDownloadResultCallback;
+import com.workdawn.speedlib.callback.ITaskGroupDownloadProgressCallback;
+import com.workdawn.speedlib.callback.ITaskGroupDownloadResultCallback;
 import com.workdawn.speedlib.core.Speed;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
     //Download link may fail, if it fails, please add new address
     private final static String WeChat = "http://imtt.dd.qq.com/16891/9A7CBD9CAFF7AA35E754408E2D2C6288.apk?fsname=com.tencent.mm_6.6.6_1300.apk&csr=1bbd";
-    private final static String TT = "http://a4.res.meizu.com/source/3637/a139023096aa4b3c89f9fbdb7d0cf399?sign=d38d27142a5e941b914bf349c1c62001&t=5af4830f&fname=com.ss.android.article.news_671";
+    private final static String TT = "http://media.cmechina.net/wwwhaoyishengcom/app/app-release-version_code_28__version_name_3.3.3.apk";
     private final static String BZ = "http://a3.res.meizu.com/source/3653/4af78c4aab7c48a18eb7fa65ba8c1a04?auth_key=1525960634-0-0-1904564795e931ccc24f17f189ee2c26&fname=com.lovebizhi.wallpaper_198";
     private final static String WB = "http://a4.res.meizu.com/source/3651/335989b4d0594d868ee8f74538717310?sign=2fedf65086642a40c5e3eafe3a1b1387&t=5af451fd&fname=com.sina.weibo_3619";
     private final static String QQ = "http://a3.res.meizu.com/source/3637/0e1a6a84267a4fb493bfe38c1b2ac8dd?auth_key=1525961282-0-0-ae7f6d07ca22be612933348d7f96d2ce&fname=com.tencent.mobileqq_832";
@@ -39,6 +44,7 @@ public class MainActivity extends Activity {
         p_wb = (ProgressBar) findViewById(R.id.p_wb);
         p_qq = (ProgressBar) findViewById(R.id.p_qq);
         p_bz = (ProgressBar) findViewById(R.id.p_bz);
+
     }
 
     public void weChat(final View view){
@@ -76,7 +82,75 @@ public class MainActivity extends Activity {
             btn.setText("暂停下载");
             Speed.resume(WeChat);
         }
+        /*ArrayList<String> urls = new ArrayList<>();
+        urls.add(WeChat);
+        urls.add(TT);
+        urls.add(BZ);
+        urls.add(WB);
+        urls.add(QQ);
+        ArrayList<String> fileNames = new ArrayList<>();
+        fileNames.add("weChat.apk");
+        fileNames.add("Tt.apk");
+        fileNames.add("Bz.apk");
+        fileNames.add("Wb.apk");
+        fileNames.add("Qq.apk");
 
+        Speed.start(urls, fileNames).setOnTaskGroupDownloadProgressListener(new ITaskGroupDownloadProgressCallback() {
+            @Override
+            public void onTasksDownloading(String url, long totalSize, long downloadedSize) {
+                float progress = downloadedSize / (totalSize * 1.0f);
+                switch (url) {
+                    case WeChat:
+                        Log.i("Speed", "WeChat  --> " + progress);
+                        break;
+                    case TT:
+                        Log.i("Speed", "Tt  --> " + progress);
+                        break;
+                    case BZ:
+                        Log.i("Speed", "Bz  --> " + progress);
+                        break;
+                    case WB:
+                        Log.i("Speed", "Wb  --> " + progress);
+                        break;
+                    case QQ:
+                        Log.i("Speed", "Qq  --> " + progress);
+                        break;
+                }
+            }
+        }).setOnTaskQueueDownloadResultListener(new ITaskGroupDownloadResultCallback() {
+            @Override
+            public void onTaskComplete(String url, String filePath) {
+                switch (url) {
+                    case WeChat:
+                        Log.i("Speed", "WeChat  --> complete path = " + filePath );
+                        break;
+                    case TT:
+                        Log.i("Speed", "Tt  --> complete path = " + filePath);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTaskError(String url, String reason) {
+                switch (url) {
+                    case WeChat:
+                        Log.i("Speed", "WeChat  --> error = " + reason);
+                        break;
+                    case TT:
+                        Log.i("Speed", "Tt  --> error = " + reason);
+                        break;
+                    case BZ:
+                        Log.i("Speed", "Bz  --> error = " + reason);
+                        break;
+                    case WB:
+                        Log.i("Speed", "Wb  --> error = " + reason);
+                        break;
+                    case QQ:
+                        Log.i("Speed", "Qq  --> error = " + reason);
+                        break;
+                }
+            }
+        });*/
     }
 
     public void hys(final View view){
@@ -87,7 +161,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onDownloading(long totalSize, long currentSize) {
                     float progress = currentSize / (totalSize * 1.0f);
-                    p_Hys.setProgress((int)(progress  * 100));
+                    p_Hys.setProgress((int) (progress * 100));
                 }
 
                 @Override
