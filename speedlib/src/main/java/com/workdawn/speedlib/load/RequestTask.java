@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -51,12 +52,14 @@ public class RequestTask implements Comparable<RequestTask>{
     private NotificationManagerCenter managerCenter = null;
     private long sendMsgTime = 0L;
     private long sendNotificationTime = 0L;
+
     //the number of task failures
     private int taskFailedNum = 0;
     private final static int MAX_ALLOW_TASK_FAILED_NUM = 3;
 
     private final static int MESSAGE_UPDATE_THRESHOLD = 500;
     private final static int NOTIFICATION_UPDATE_THRESHOLD = 2 * 1000;
+    private int HASH_CODE;
 
     private File saveFile;
     private Map<String, String> headers;
@@ -109,7 +112,7 @@ public class RequestTask implements Comparable<RequestTask>{
                 || totalSize == alreadyDownloadSize){
             sendNotificationTime = System.currentTimeMillis();
             if (managerCenter != null) {
-                managerCenter.updateNotificationProgress((int) ((alreadyDownloadSize / (totalSize * 1.0f)) * 100), hashCode(), fileName);
+                managerCenter.updateNotificationProgress((int) ((alreadyDownloadSize / (totalSize * 1.0f)) * 100), getHashCode(), fileName);
             }
         }
     }
@@ -167,6 +170,11 @@ public class RequestTask implements Comparable<RequestTask>{
             }
         }
         return false;
+    }
+
+    private int getHashCode(){
+        if(HASH_CODE == 0) HASH_CODE = hashCode();
+        return HASH_CODE;
     }
 
     @Override
@@ -272,6 +280,7 @@ public class RequestTask implements Comparable<RequestTask>{
         executorService = null;
         h = null;
         mRequestTaskQueue.decrementRunningTaskCount(this);
+        mRequestTaskQueue.removeTaskFuture(getHashCode());
         mRequestTaskQueue.clearCompleteTaskAndSelectNew(this);
     }
 
@@ -310,7 +319,7 @@ public class RequestTask implements Comparable<RequestTask>{
             RequestTaskQueue.DISPATCHER_INIT = true;
             Dispatcher dispatcher = new Dispatcher(mRequestTaskQueue);
             mRequestTaskQueue.setDispatcher(dispatcher);
-            mRequestTaskQueue.addFuture(executorManager .getBackgroundExecutor().submit(dispatcher));
+            mRequestTaskQueue.addFuture(-1, executorManager .getBackgroundExecutor().submit(dispatcher));
         }
     }
 
@@ -336,8 +345,14 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     public void run(){
+        Future taskFuture = mRequestTaskQueue.getTaskFuture(getHashCode());
+        if(taskFuture != null){
+            taskFuture.cancel(true);
+            mRequestTaskQueue.removeTaskFuture(getHashCode());
+        }
         status = Status.RUNNING;
         mRequestTaskQueue.incrementRunningTaskCount(this);
-        mRequestTaskQueue.addFuture(executorManager.getBackgroundExecutor().submit(new RequestRunnable(this, mRequestTaskQueue.getDatabase())));
+        mRequestTaskQueue.addFuture(getHashCode(), executorManager.getBackgroundExecutor()
+                .submit(new RequestRunnable(this, mRequestTaskQueue.getDatabase())));
     }
 }
