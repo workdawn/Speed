@@ -18,7 +18,6 @@ import com.workdawn.speedlib.executor.Dispatcher;
 import com.workdawn.speedlib.executor.ExecutorManager;
 import com.workdawn.speedlib.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -46,11 +45,11 @@ public class RequestTaskQueue {
     private final PriorityBlockingQueue<RequestTask> pauseTaskQueue = new PriorityBlockingQueue<>();
     //current running task collection
     private final SparseArray<RequestTask> currentRunningTasks = new SparseArray<>();
+    //all download task future
+    private SparseArray<Future> futures = new SparseArray<>();
 
     private NetworkListenerBroadcastReceiver networkListenerBroadcastReceiver = null;
     private SpeedOption mSpeedOption;
-
-    private List<Future> futures = new ArrayList<>();
 
     private IDatabase database;
 
@@ -148,9 +147,7 @@ public class RequestTaskQueue {
 
     void addPauseTaskToResumeQueue(){
         if(pauseTaskQueue.size() > 0){
-            RequestTask task = pauseTaskQueue.poll();
-            addTaskToResumeQueue(task);
-            pollRequestTaskToRunningQueue();
+            addTaskToResumeQueue(pauseTaskQueue.poll());
         }
     }
 
@@ -178,8 +175,16 @@ public class RequestTaskQueue {
         return database;
     }
 
-    void addFuture(Future future){
-        futures.add(future);
+    void addFuture(int key, Future future){
+        futures.put(key, future);
+    }
+
+    void removeTaskFuture(int key){
+        futures.remove(key);
+    }
+
+    Future getTaskFuture(int key){
+        return futures.get(key);
     }
 
     void addTaskToResumeOrRunningQueue(RequestTask requestTask) {
@@ -312,10 +317,17 @@ public class RequestTaskQueue {
         if(networkListenerBroadcastReceiver != null){
             networkListenerBroadcastReceiver.unregister();
         }
-        for (Future future : futures) {
-            future.cancel(true);
+
+        int len = futures.size();
+        for(int i = 0; i < len; i++){
+            int key = futures.keyAt(i);
+            Future future = futures.get(key);
+            if(future != null){
+                future.cancel(true);
+            }
         }
         futures.clear();
+
         ExecutorManager.newInstance().getBackgroundExecutor().shutdown();
         if(database != null){
             database.close();
