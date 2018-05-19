@@ -37,7 +37,7 @@ public class RequestTaskQueue {
     private final ConcurrentHashMap<String, RequestTask> tasks = new ConcurrentHashMap<>();
     //task uniqueId
     private final ConcurrentHashMap<String, String> uniqueKeys = new ConcurrentHashMap<>();
-    //running
+    //wait to running
     private final PriorityBlockingQueue<RequestTask> runningTaskQueue = new PriorityBlockingQueue<>();
     //wait to run
     private final PriorityBlockingQueue<RequestTask> resumeTaskQueue = new PriorityBlockingQueue<>();
@@ -85,14 +85,18 @@ public class RequestTaskQueue {
         uniqueKeys.put(url, uniqueId);
     }
 
+    /**
+     * Record the number of tasks currently being performed
+     * @param requestTask running task
+     */
     void incrementRunningTaskCount(RequestTask requestTask){
         currentRunningTaskCount.incrementAndGet();
-        currentRunningTasks.put(requestTask.hashCode(), requestTask);
+        currentRunningTasks.put(requestTask.getHashCode(), requestTask);
     }
 
     void decrementRunningTaskCount(RequestTask requestTask){
         currentRunningTaskCount.decrementAndGet();
-        currentRunningTasks.remove(requestTask.hashCode());
+        currentRunningTasks.remove(requestTask.getHashCode());
     }
 
     void setDispatcher(Dispatcher dispatcher){
@@ -180,7 +184,11 @@ public class RequestTaskQueue {
     }
 
     void removeTaskFuture(int key){
-        futures.remove(key);
+        Future future = futures.get(key);
+        if(future != null){
+            future.cancel(true);
+            futures.remove(key);
+        }
     }
 
     Future getTaskFuture(int key){
@@ -234,7 +242,7 @@ public class RequestTaskQueue {
         if(uniqueKeys.containsKey(requestTask.getUrl())){
             uniqueKeys.remove(requestTask.getUrl(), requestTask.getUniqueId());
         }
-        currentRunningTasks.remove(requestTask.hashCode());
+        currentRunningTasks.remove(requestTask.getHashCode());
         autoQuit();
     }
 
@@ -306,6 +314,7 @@ public class RequestTaskQueue {
         resumeTaskQueue.clear();
         pauseTaskQueue.clear();
         currentRunningTasks.clear();
+        futures.clear();
     }
 
     public void quit(){

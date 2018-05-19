@@ -172,7 +172,7 @@ public class RequestTask implements Comparable<RequestTask>{
         return false;
     }
 
-    private int getHashCode(){
+    int getHashCode(){
         if(HASH_CODE == 0) HASH_CODE = hashCode();
         return HASH_CODE;
     }
