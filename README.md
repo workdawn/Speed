@@ -9,7 +9,14 @@ Speed
 更新日志
 ----
 
-当前版本`1.0.4`
+当前版本`1.0.5`
+<br>
+更新内容：<br>
+1.修复潜在内存泄露问题<br>
+2.fix bugs<br>
+<br>
+
+版本`1.0.4`
 <br>
 更新内容：<br>
 1.添加启动任务组方法`Speed.start(ArrayList, ArrayList)` <br>
@@ -66,7 +73,7 @@ Speed
 在项目module的build.gradle中添加:
 ```
     dependencies {
-	     compile 'com.github.workdawn:Speed:1.0.4'
+	     compile 'com.github.workdawn:Speed:1.0.5'
 	}
 ```
 
@@ -86,7 +93,7 @@ Speed
     <dependency>
 	    <groupId>com.github.workdawn</groupId>
 	    <artifactId>Speed</artifactId>
-	    <version>1.0.4</version>
+	    <version>1.0.5</version>
 	</dependency>
 ```
 
