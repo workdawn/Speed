@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 
-import com.workdawn.speedlib.core.Speed;
 import com.workdawn.speedlib.core.SpeedOption;
 import com.workdawn.speedlib.executor.RequestRunnable;
 import com.workdawn.speedlib.load.IHttpClient;
