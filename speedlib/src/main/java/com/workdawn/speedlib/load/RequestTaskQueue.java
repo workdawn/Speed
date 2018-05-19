@@ -37,7 +37,7 @@ public class RequestTaskQueue {
     private final ConcurrentHashMap<String, RequestTask> tasks = new ConcurrentHashMap<>();
     //task uniqueId
     private final ConcurrentHashMap<String, String> uniqueKeys = new ConcurrentHashMap<>();
-    //wait to running
+    //running
     private final PriorityBlockingQueue<RequestTask> runningTaskQueue = new PriorityBlockingQueue<>();
     //wait to run
     private final PriorityBlockingQueue<RequestTask> resumeTaskQueue = new PriorityBlockingQueue<>();
@@ -338,6 +338,7 @@ public class RequestTaskQueue {
         futures.clear();
 
         ExecutorManager.newInstance().getBackgroundExecutor().shutdown();
+
         if(database != null){
             database.close();
             database = null;
@@ -345,6 +346,8 @@ public class RequestTaskQueue {
         sRequestTaskQueue = null;
         mSpeedOption = null;
         DISPATCHER_INIT = false;
+
+        clearTaskQueueCallback();
     }
 
     static class NetworkListenerBroadcastReceiver extends BroadcastReceiver {
