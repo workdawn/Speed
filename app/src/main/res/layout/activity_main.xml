@@ -83,4 +83,16 @@
         android:layout_marginRight="4dp"
         android:max="100"
         android:progressTint="@color/colorPrimaryDark" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="cancelAll"
+        android:text="取消所有任务" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="quit"
+        android:text="退出Speed" />
 </LinearLayout>

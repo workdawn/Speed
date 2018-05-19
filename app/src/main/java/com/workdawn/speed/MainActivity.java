@@ -2,7 +2,6 @@ package com.workdawn.speed;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -19,7 +18,7 @@ public class MainActivity extends Activity {
 
     //Download link may fail, if it fails, please add new address
     private final static String WeChat = "http://imtt.dd.qq.com/16891/9A7CBD9CAFF7AA35E754408E2D2C6288.apk?fsname=com.tencent.mm_6.6.6_1300.apk&csr=1bbd";
-    private final static String TT = "http://media.cmechina.net/wwwhaoyishengcom/app/app-release-version_code_28__version_name_3.3.3.apk";
+    private final static String TT = "http://a4.res.meizu.com/source/3668/55f6fd40391a4614b5f5418034daeb12?sign=bb047e10529185a34ae57f0eded5e95e&t=5afedecb&fname=com.meizu.media.reader_4003001";
     private final static String BZ = "http://a3.res.meizu.com/source/3653/4af78c4aab7c48a18eb7fa65ba8c1a04?auth_key=1525960634-0-0-1904564795e931ccc24f17f189ee2c26&fname=com.lovebizhi.wallpaper_198";
     private final static String WB = "http://a4.res.meizu.com/source/3651/335989b4d0594d868ee8f74538717310?sign=2fedf65086642a40c5e3eafe3a1b1387&t=5af451fd&fname=com.sina.weibo_3619";
     private final static String QQ = "http://a3.res.meizu.com/source/3637/0e1a6a84267a4fb493bfe38c1b2ac8dd?auth_key=1525961282-0-0-ae7f6d07ca22be612933348d7f96d2ce&fname=com.tencent.mobileqq_832";
