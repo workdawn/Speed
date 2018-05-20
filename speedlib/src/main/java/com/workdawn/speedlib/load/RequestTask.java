@@ -218,7 +218,11 @@ public class RequestTask implements Comparable<RequestTask>{
 
     public void setRequestTaskQueue(RequestTaskQueue mRequestTaskQueue) {
         this.mRequestTaskQueue = mRequestTaskQueue;
-        executorService = Executors.newFixedThreadPool(SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT);
+        //executorService = Executors.newFixedThreadPool(SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT);
+    }
+
+    public void createExecutorService(int nThreads){
+        executorService = Executors.newFixedThreadPool(nThreads);
     }
 
     public RequestTask setOnDownloadProgressChangeListener(IDownloadProgressCallback cb){

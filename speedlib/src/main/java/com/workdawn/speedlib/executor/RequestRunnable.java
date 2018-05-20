@@ -222,6 +222,7 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
                                               IDatabase database, long blockLength, IHttpClient httpClient) throws Exception{
         Utils.createRandomAccessFile(saveFile, fileTotalBytes);
         int modelCount = models.size();
+        requestTask.createExecutorService(modelCount);
         for(int i = 0; i < modelCount; i++){
             int key = models.keyAt(i);
             DownloadModel downloadModel = models.get(key);
@@ -257,6 +258,7 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
                 }
 
             }
+            requestTask.createExecutorService(SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT);
             for(int i = 0; i < SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT; i ++){
                 long startRange = i * blockLength;
                 long endRange = (i + 1) * blockLength - 1;
