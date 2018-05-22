@@ -267,7 +267,7 @@ public class RequestTask implements Comparable<RequestTask>{
         ExecutorManager.newInstance().getCallbackExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                if(mRequestTaskQueue.getResultCallback() != null){
+                if (mRequestTaskQueue.getResultCallback() != null) {
                     mRequestTaskQueue.getResultCallback().onTaskComplete(url, filePath);
                 } else if (downloadResultCallback != null) {
                     downloadResultCallback.onComplete(filePath);
@@ -278,10 +278,12 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     private void clear(){
-        executorService.shutdown();
+        if(executorService != null){
+            executorService.shutdown();
+            executorService = null;
+        }
         downloadProgressCallback = null;
         downloadResultCallback = null;
-        executorService = null;
         h = null;
         mRequestTaskQueue.decrementRunningTaskCount(this);
         mRequestTaskQueue.removeTaskFuture(getHashCode());

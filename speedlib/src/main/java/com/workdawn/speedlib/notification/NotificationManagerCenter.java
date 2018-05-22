@@ -21,12 +21,14 @@ public class NotificationManagerCenter {
     private INotificationAction iNotificationAction;
     private RemoteViews remoteViews;
 
+
     public NotificationManagerCenter(Context context, INotificationShow iNotificationShow, INotificationAction iNotificationAction){
         builder = new NotificationCompat.Builder(context);
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         this.iNotificationShow = iNotificationShow;
         this.iNotificationAction = iNotificationAction;
     }
+
 
     public void createNotification(RequestTask requestTask, Context context){
         builder.setSmallIcon(iNotificationShow.getSmallIcon())
@@ -52,7 +54,6 @@ public class NotificationManagerCenter {
             builder.setContentTitle(fileName + " (" + progress + "%)");
             builder.setProgress(100, progress, false);
         }
-        notificationManager.notify(notificationId, builder.build());
         if(progress >= 100){
             if(remoteViews != null){
                 remoteViews.setTextViewText(iNotificationShow.getRemoteViewContentViewId(), iNotificationShow.getDownloadFinishContent());
@@ -60,7 +61,7 @@ public class NotificationManagerCenter {
                 builder.setContentText(iNotificationShow.getDownloadFinishContent())
                         .setProgress(0, 0, false);
             }
-            notificationManager.notify(notificationId, builder.build());
         }
+        notificationManager.notify(notificationId, builder.build());
     }
 }
