@@ -7,6 +7,7 @@ import com.workdawn.speedlib.load.IHttpClient;
 import com.workdawn.speedlib.load.RequestTask;
 import com.workdawn.speedlib.model.DownloadModel;
 import com.workdawn.speedlib.model.RequestModel;
+import com.workdawn.speedlib.utils.ByteArrayPool;
 import com.workdawn.speedlib.utils.LogUtils;
 import com.workdawn.speedlib.utils.Utils;
 
@@ -65,6 +66,8 @@ public class DownloadThread implements Runnable{
         requestModel.setHeaders(requestTask.getRequestHeaders());
         RandomAccessFile randomAccessFile = null;
         IHttpClient httpClient = null;
+        ByteArrayPool pool = null;
+        byte[] buffer = null;
         try {
             LogUtils.i("Thread id = " + threadId + " start download from position " +
                     realStartRange +" to position = " + endRange + " and alreadyDownload size = " + alreadyDownloadedLength);
@@ -88,7 +91,9 @@ public class DownloadThread implements Runnable{
             downloadModel.setEtag(eTag);
             downloadModel.setLastModified(lastModified);
             downloadModel.setComplete(0);
-            byte[] buffer = new byte[RequestRunnable.DOWNLOAD_BUFFER_SIZE];
+            pool = requestTask.getRequestTaskQueue().getPool();
+            buffer = pool.getBuf(RequestRunnable.DOWNLOAD_BUFFER_SIZE);
+            //byte[] buffer = new byte[RequestRunnable.DOWNLOAD_BUFFER_SIZE];
             int len;
             while (requestTask.canDownload() && (len = inputStream.read(buffer)) != -1) {
                 randomAccessFile.write(buffer, 0, len);
@@ -123,7 +128,9 @@ public class DownloadThread implements Runnable{
             if(httpClient != null){
                 httpClient.close();
             }
+            if(pool != null){
+                pool.returnBuf(buffer);
+            }
         }
-
     }
 }

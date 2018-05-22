@@ -16,6 +16,7 @@ import com.workdawn.speedlib.core.SpeedOption;
 import com.workdawn.speedlib.db.IDatabase;
 import com.workdawn.speedlib.executor.Dispatcher;
 import com.workdawn.speedlib.executor.ExecutorManager;
+import com.workdawn.speedlib.utils.ByteArrayPool;
 import com.workdawn.speedlib.utils.Utils;
 
 import java.util.List;
@@ -62,12 +63,19 @@ public class RequestTaskQueue {
     private ITaskGroupDownloadProgressCallback progressCallback = null;
     private ITaskGroupDownloadResultCallback resultCallback = null;
 
+    private ByteArrayPool mPool;
+
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
+        mPool = new ByteArrayPool(4096);
         if(mSpeedOption.autoMaxAllowRunningTaskNum){
             networkListenerBroadcastReceiver = new NetworkListenerBroadcastReceiver(this, context);
             networkListenerBroadcastReceiver.register();
         }
+    }
+
+    public ByteArrayPool getPool() {
+        return mPool;
     }
 
     public static RequestTaskQueue newInstance(Context context, SpeedOption speedOption){
@@ -348,6 +356,8 @@ public class RequestTaskQueue {
         DISPATCHER_INIT = false;
 
         clearTaskQueueCallback();
+
+        mPool.clear();
     }
 
     static class NetworkListenerBroadcastReceiver extends BroadcastReceiver {

@@ -126,9 +126,13 @@ public class Utils {
 
     public static boolean saveFile(InputStream inputStream, File saveDir, final RequestTask requestTask, long fileTotalBytes){
         FileOutputStream fileOutputStream = null;
+        ByteArrayPool pool = null;
+        byte[] buffer = null;
         try {
             fileOutputStream = new FileOutputStream(saveDir);
-            byte[] buffer = new byte[RequestRunnable.DOWNLOAD_BUFFER_SIZE];
+            pool = requestTask.getRequestTaskQueue().getPool();
+            buffer = pool.getBuf(RequestRunnable.DOWNLOAD_BUFFER_SIZE);
+            //byte[] buffer = new byte[RequestRunnable.DOWNLOAD_BUFFER_SIZE];
             int len ;
             long alreadyDownloadedSize = 0L;
             DownloadCallback cb = new DownloadCallback(fileTotalBytes);
@@ -154,6 +158,9 @@ public class Utils {
                     e.printStackTrace();
                     requestTask.processDownloadFailed(e.getMessage());
                 }
+            }
+            if(pool != null){
+                pool.returnBuf(buffer);
             }
         }
         return false;

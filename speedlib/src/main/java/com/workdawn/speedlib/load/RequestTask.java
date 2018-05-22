@@ -117,6 +117,10 @@ public class RequestTask implements Comparable<RequestTask>{
         }
     }
 
+    public RequestTaskQueue getRequestTaskQueue() {
+        return mRequestTaskQueue;
+    }
+
     Status getStatus() {
         return status;
     }
