@@ -150,7 +150,7 @@ public class SpeedOption {
      * @param maxNum the max number
      */
     public SpeedOption setMaxAllowRunningTaskCount(int maxNum){
-        Preconditions.checkArgument(maxNum > 0, "maxAllowRunningTaskNum must be more than 0");
+        Preconditions.checkArgument(maxNum > 0 && maxNum <= 5, "maxAllowRunningTaskNum must be more than 0 and less then 6");
         maxAllowRunningTaskNum = maxNum;
         return this;
     }
