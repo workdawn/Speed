@@ -13,7 +13,7 @@ Speed
 <br>
 1.添加`SpeedOption.setAllowedNetworkTypes(int netFlags)`方法，允许设置下载器执行的网络环境<br>
 2.优化字节缓冲区获取策略<br>
-2.fix bugs<br>
+3.fix bugs<br>
 <br>
 
 版本`1.0.5`
