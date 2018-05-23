@@ -238,7 +238,7 @@ public class RequestTaskQueue {
         return resultCallback;
     }
 
-    public void clearTaskQueueCallback(){
+    private void clearTaskQueueCallback(){
         progressCallback = null;
         resultCallback = null;
     }
