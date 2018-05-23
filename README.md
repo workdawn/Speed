@@ -9,7 +9,14 @@ Speed
 更新日志
 ----
 
-当前版本`1.0.5`
+当前版本`1.0.6`
+<br>
+1.添加`SpeedOption.setAllowedNetworkTypes(int netFlags)`方法，允许设置下载器执行的网络环境<br>
+2.优化字节缓冲区获取策略<br>
+2.fix bugs<br>
+<br>
+
+版本`1.0.5`
 <br>
 更新内容：<br>
 1.修复潜在内存泄露问题<br>
@@ -73,7 +80,7 @@ Speed
 在项目module的build.gradle中添加:
 ```
     dependencies {
-	     compile 'com.github.workdawn:Speed:1.0.5'
+	     compile 'com.github.workdawn:Speed:1.0.6'
 	}
 ```
 
@@ -93,7 +100,7 @@ Speed
     <dependency>
 	    <groupId>com.github.workdawn</groupId>
 	    <artifactId>Speed</artifactId>
-	    <version>1.0.5</version>
+	    <version>1.0.6</version>
 	</dependency>
 ```
 
@@ -169,6 +176,7 @@ public SpeedOption setUserAgent(String agent);//设置请求的Agent
 public SpeedOption setDownloadDir(File saveDir);//设置文件下载的存放位置
 public SpeedOption setAutoExitSpeedWhenAllTaskComplete(boolean exit);//设置是否在任务全部完成后退出Speed，默认不退出
 public SpeedOption setRequestHeaders(Map<String, String> headers);//设置全局请求头，如果某个任务设置了自己的请求头那么会忽略全局请求头
+public SpeedOption setAllowedNetworkTypes(int netFlags);//设置允许下载器执行的网络环境(可取值SpeedOption.NETWORK_WIFI, SpeedOption.NETWORK_MOBILE，支持或运算)，默认WIFI + MOBILE
 
 ```
 
