@@ -10,6 +10,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         SpeedOption option = SpeedOption.newInstance()
+                .setAllowedNetworkTypes(SpeedOption.NETWORK_WIFI | SpeedOption.NETWORK_MOBILE)
                 .setNotificationActionImpl(new NotificationActionImpl())
                 .setNotificationShowImpl(new NotificationShowImpl());
         Speed.init(this, option);
