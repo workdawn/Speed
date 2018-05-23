@@ -48,6 +48,7 @@ public class RequestTask implements Comparable<RequestTask>{
     public final static int HANDLE_PRE_DOWNLOAD = 311;
     private final static int RE_START_PRIORITY = 1;
     private final static int FAILED_TASK_PRIORITY = 2;
+    final static int CHANGE_NETWORK_PRIORITY = 3;
     private final static int NORMAL_TASK_PRIORITY = 0;
     private NotificationManagerCenter managerCenter = null;
     private long sendMsgTime = 0L;
@@ -298,7 +299,7 @@ public class RequestTask implements Comparable<RequestTask>{
         ExecutorManager.newInstance().getCallbackExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                if(mRequestTaskQueue.getResultCallback() != null){
+                if (mRequestTaskQueue.getResultCallback() != null) {
                     mRequestTaskQueue.getResultCallback().onTaskError(url, message);
                 } else if (downloadResultCallback != null) {
                     downloadResultCallback.onError(message);

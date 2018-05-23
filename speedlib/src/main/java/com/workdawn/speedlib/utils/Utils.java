@@ -177,4 +177,8 @@ public class Utils {
         String lastModified = httpClient.getHeaderField(RequestRunnable.HTTP_HEADER_KEY_LAST_MODIFIED);
         return isStringEmpty(lastModified) ? "" : lastModified;
     }
+
+    public static boolean netAllowTaskRunning(int netFlag, SpeedOption option){
+        return (option.mAllowedNetworkTypes & netFlag) > 0;
+    }
 }

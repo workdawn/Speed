@@ -1,6 +1,8 @@
 package com.workdawn.speedlib.core;
 
 
+import android.net.ConnectivityManager;
+
 import com.workdawn.speedlib.db.DefaultDatabaseFactory;
 import com.workdawn.speedlib.db.IDatabaseFactory;
 import com.workdawn.speedlib.load.DefaultHttpClientFactory;
@@ -25,6 +27,17 @@ public class SpeedOption {
     private final static int DEFAULT_READ_TIME_OUT = 30_000;
     public final static int DEFAULT_MAX_ALLOW_RUNNING_TASK_COUNT = 3;
     public final static int DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT = 3;
+    /**
+     * Bit flag for {@link #setAllowedNetworkTypes} corresponding to
+     * {@link ConnectivityManager#TYPE_MOBILE}.
+     */
+    public final static int NETWORK_MOBILE = 1 << 0;
+    /**
+     * Bit flag for {@link #setAllowedNetworkTypes} corresponding to
+     * {@link ConnectivityManager#TYPE_WIFI}.
+     */
+    public final static int NETWORK_WIFI = 1 << 1;
+    public final static int NETWORK_DEFAULT = ~0;
 
     public IDatabaseFactory databaseFactory = null;
     public IHttpClientFactory httpClientFactory = null;
@@ -41,6 +54,7 @@ public class SpeedOption {
     public String userAgent;
     public File saveDir;
     public Map<String, String> headers;
+    public int mAllowedNetworkTypes = NETWORK_DEFAULT;
 
     private SpeedOption(){
         connectTimeout = DEFAULT_CONNECT_TIME_OUT;
@@ -52,6 +66,7 @@ public class SpeedOption {
         autoMaxAllowRunningTaskNum = false;
         showLog = false;
         autoExit = false;
+        mAllowedNetworkTypes = NETWORK_DEFAULT;
         iNotificationShow = new DefaultNotificationShowImpl();
         iNotificationAction = new DefaultNotificationActionImpl();
     }
@@ -200,6 +215,16 @@ public class SpeedOption {
     public SpeedOption setRequestHeaders(Map<String, String> headers){
         Preconditions.checkArgument((headers != null && headers.size() > 0), "Request headers must not be null");
         this.headers = headers;
+        return this;
+    }
+
+    /**
+     *Restrict the types of networks over which this download may proceed. By default, all network types are allowed.
+     * Range of possible values [SpeedOption.NETWORK_WIFI, SpeedOption.NETWORK_MOBILE, SpeedOption.NETWORK_DEFAULT]
+     * @param netFlags any combination of the NETWORK_* bit flags.
+     */
+    public SpeedOption setAllowedNetworkTypes(int netFlags){
+        mAllowedNetworkTypes = netFlags;
         return this;
     }
 }

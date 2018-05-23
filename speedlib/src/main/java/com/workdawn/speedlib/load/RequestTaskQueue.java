@@ -65,13 +65,13 @@ public class RequestTaskQueue {
 
     private ByteArrayPool mPool;
 
+    private int currentNetType = SpeedOption.NETWORK_DEFAULT;
+
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
         mPool = new ByteArrayPool(4096);
-        if(mSpeedOption.autoMaxAllowRunningTaskNum){
-            networkListenerBroadcastReceiver = new NetworkListenerBroadcastReceiver(this, context);
-            networkListenerBroadcastReceiver.register();
-        }
+        networkListenerBroadcastReceiver = new NetworkListenerBroadcastReceiver(this, context);
+        networkListenerBroadcastReceiver.register();
     }
 
     public ByteArrayPool getPool() {
@@ -164,8 +164,14 @@ public class RequestTaskQueue {
     }
 
     void addTaskToResumeQueue(RequestTask task){
+        addTaskToResumeQueue(task, true);
+    }
+
+    void addTaskToResumeQueue(RequestTask task, boolean autoExecutedNext){
         resumeTaskQueue.put(task);
-        pollRequestTaskToRunningQueue();
+        if(autoExecutedNext){
+            pollRequestTaskToRunningQueue();
+        }
     }
 
     private int getCurrentRunningTaskNum() {
@@ -173,7 +179,8 @@ public class RequestTaskQueue {
     }
 
     private boolean canPutTaskToRunningQueue(){
-        return getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum;
+        return getCurrentRunningTaskNum() < mSpeedOption.maxAllowRunningTaskNum
+                && Utils.netAllowTaskRunning(currentNetType, mSpeedOption);
     }
 
     IDatabase getDatabase(){
@@ -276,6 +283,27 @@ public class RequestTaskQueue {
         requestTask.pause();
     }
 
+    /**
+     * Suspend all running tasks,
+     * When there is a scene that does not allow the task to be executed,
+     * this method will be called, such as the network changes
+     *
+     * This method will put the task into the waiting execution queue.
+     * This is also the only way to change the RUNNING state task directly into the RESUME state task. For internal use,
+     * the external normal state RUNNING state needs to be changed to PAUSE and then to RESUME.
+     */
+    void pauseAllRunningTask(){
+        int len = currentRunningTasks.size();
+        for(int i = 0; i < len; i++){
+            RequestTask task = currentRunningTasks.get(currentRunningTasks.keyAt(i));
+            task.setPriority(RequestTask.CHANGE_NETWORK_PRIORITY);
+            task.setStatus(Status.RESUME);
+            addTaskToResumeQueue(task, false);
+        }
+        currentRunningTasks.clear();
+        currentRunningTaskCount.set(0);
+    }
+
     public void resume(RequestTask requestTask){
         requestTask.resume();
     }
@@ -290,12 +318,12 @@ public class RequestTaskQueue {
         }
     }
 
-    public void cancelAll(final boolean isQuit){
+    public void cancelAll(final boolean isQuit) {
         ExecutorManager.newInstance().getBackgroundExecutor().submit(new Runnable() {
             @Override
             public void run() {
                 cancelAllTask();
-                if(isQuit){
+                if (isQuit) {
                     shutDown();
                 }
             }
@@ -303,7 +331,31 @@ public class RequestTaskQueue {
     }
 
     void dispatchNetworkChange(NetworkInfo info){
-        Utils.adjustMaxRunningTaskCount(info, mSpeedOption);
+        if(mSpeedOption.autoMaxAllowRunningTaskNum){
+            Utils.adjustMaxRunningTaskCount(info, mSpeedOption);
+        }
+        if(info != null){
+            switch (info.getType()) {
+                case ConnectivityManager.TYPE_WIFI:
+                case ConnectivityManager.TYPE_WIMAX:
+                case ConnectivityManager.TYPE_ETHERNET:
+                    currentNetType = SpeedOption.NETWORK_WIFI;
+                    netAllow(SpeedOption.NETWORK_WIFI);
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:
+                    currentNetType = SpeedOption.NETWORK_MOBILE;
+                    netAllow(SpeedOption.NETWORK_MOBILE);
+                    break;
+            }
+        }
+    }
+
+    private void netAllow(int netFlag){
+        if(!Utils.netAllowTaskRunning(netFlag, mSpeedOption)){
+            pauseAllRunningTask();
+        } else {
+            pollRequestTaskToRunningQueue();
+        }
     }
 
     private void cancelAllTask(){
