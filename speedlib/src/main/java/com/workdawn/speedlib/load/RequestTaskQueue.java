@@ -167,7 +167,7 @@ public class RequestTaskQueue {
         addTaskToResumeQueue(task, true);
     }
 
-    void addTaskToResumeQueue(RequestTask task, boolean autoExecutedNext){
+    private void addTaskToResumeQueue(RequestTask task, boolean autoExecutedNext){
         resumeTaskQueue.put(task);
         if(autoExecutedNext){
             pollRequestTaskToRunningQueue();
@@ -230,11 +230,11 @@ public class RequestTaskQueue {
         return this;
     }
 
-    public ITaskGroupDownloadProgressCallback getProgressCallback() {
+    ITaskGroupDownloadProgressCallback getProgressCallback() {
         return progressCallback;
     }
 
-    public ITaskGroupDownloadResultCallback getResultCallback() {
+    ITaskGroupDownloadResultCallback getResultCallback() {
         return resultCallback;
     }
 
@@ -292,7 +292,7 @@ public class RequestTaskQueue {
      * This is also the only way to change the RUNNING state task directly into the RESUME state task. For internal use,
      * the external normal state RUNNING state needs to be changed to PAUSE and then to RESUME.
      */
-    void pauseAllRunningTask(){
+   private void pauseAllRunningTask(){
         int len = currentRunningTasks.size();
         for(int i = 0; i < len; i++){
             RequestTask task = currentRunningTasks.get(currentRunningTasks.keyAt(i));
