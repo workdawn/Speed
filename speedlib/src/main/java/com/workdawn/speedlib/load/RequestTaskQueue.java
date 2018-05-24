@@ -69,8 +69,8 @@ public class RequestTaskQueue {
 
     private int currentNetType = SpeedOption.NETWORK_DEFAULT;
 
-    boolean isTaskExecutorInit = false;
-    public ExecutorService executorService;
+    private boolean isTaskExecutorInit = false;
+    private ExecutorService executorService;
 
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
@@ -79,7 +79,7 @@ public class RequestTaskQueue {
         networkListenerBroadcastReceiver.register();
     }
 
-    public synchronized ExecutorService createExecutorService(){
+    synchronized ExecutorService createExecutorService(){
         if(!isTaskExecutorInit){
             executorService = Executors.newFixedThreadPool(3);
         }
