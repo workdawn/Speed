@@ -21,6 +21,8 @@ import com.workdawn.speedlib.utils.Utils;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,11 +69,21 @@ public class RequestTaskQueue {
 
     private int currentNetType = SpeedOption.NETWORK_DEFAULT;
 
+    boolean isTaskExecutorInit = false;
+    public ExecutorService executorService;
+
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
         mPool = new ByteArrayPool(4096);
         networkListenerBroadcastReceiver = new NetworkListenerBroadcastReceiver(this, context);
         networkListenerBroadcastReceiver.register();
+    }
+
+    public synchronized ExecutorService createExecutorService(){
+        if(!isTaskExecutorInit){
+            executorService = Executors.newFixedThreadPool(3);
+        }
+        return executorService;
     }
 
     public ByteArrayPool getPool() {
@@ -396,6 +408,11 @@ public class RequestTaskQueue {
             }
         }
         futures.clear();
+
+        if(executorService != null){
+            executorService.shutdown();
+            executorService = null;
+        }
 
         ExecutorManager.newInstance().getBackgroundExecutor().shutdown();
 

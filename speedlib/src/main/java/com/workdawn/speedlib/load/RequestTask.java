@@ -21,7 +21,6 @@ import com.workdawn.speedlib.utils.Preconditions;
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -223,11 +222,10 @@ public class RequestTask implements Comparable<RequestTask>{
 
     public void setRequestTaskQueue(RequestTaskQueue mRequestTaskQueue) {
         this.mRequestTaskQueue = mRequestTaskQueue;
-        //executorService = Executors.newFixedThreadPool(SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT);
     }
 
     public void createExecutorService(int nThreads){
-        executorService = Executors.newFixedThreadPool(nThreads);
+        executorService = mRequestTaskQueue.createExecutorService();
     }
 
     public RequestTask setOnDownloadProgressChangeListener(IDownloadProgressCallback cb){
@@ -283,10 +281,6 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     private void clear(){
-        if(executorService != null){
-            executorService.shutdown();
-            executorService = null;
-        }
         downloadProgressCallback = null;
         downloadResultCallback = null;
         h = null;
