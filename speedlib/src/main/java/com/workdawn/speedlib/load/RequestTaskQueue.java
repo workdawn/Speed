@@ -423,6 +423,7 @@ public class RequestTaskQueue {
         sRequestTaskQueue = null;
         mSpeedOption = null;
         DISPATCHER_INIT = false;
+        isTaskExecutorInit = false;
 
         clearTaskQueueCallback();
 
