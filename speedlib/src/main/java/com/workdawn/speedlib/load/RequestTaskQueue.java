@@ -394,6 +394,7 @@ public class RequestTaskQueue {
     }
 
     private void shutDown(){
+
         if(networkListenerBroadcastReceiver != null){
             networkListenerBroadcastReceiver.unregister();
         }
