@@ -12,6 +12,7 @@ class DownloadThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(@NonNull Runnable r) {
+
         return new ExecutorThread(r);
     }
 }
