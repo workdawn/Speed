@@ -16,7 +16,7 @@ class ExecutorThread extends Thread {
     @Override
     public void run() {
         android.os.Process.setThreadPriority(THREAD_PRIORITY_BACKGROUND);
-        LogUtils.i(Thread.currentThread().getName());
+        LogUtils.i("当前执行的线程名：" + Thread.currentThread().getName());
         super.run();
     }
 }
