@@ -9,7 +9,13 @@ Speed
 更新日志
 ----
 
-当前版本`1.0.6`
+当前版本`1.0.7`
+<br>
+1.修复下载线程池问题<br>
+2.修复一些bug<br>
+<br>
+
+版本`1.0.6`
 <br>
 1.添加`SpeedOption.setAllowedNetworkTypes(int netFlags)`方法，允许设置下载器执行的网络环境<br>
 2.优化字节缓冲区获取策略<br>
@@ -80,7 +86,7 @@ Speed
 在项目module的build.gradle中添加:
 ```
     dependencies {
-	     compile 'com.github.workdawn:Speed:1.0.6'
+	     compile 'com.github.workdawn:Speed:1.0.7'
 	}
 ```
 
@@ -100,7 +106,7 @@ Speed
     <dependency>
 	    <groupId>com.github.workdawn</groupId>
 	    <artifactId>Speed</artifactId>
-	    <version>1.0.6</version>
+	    <version>1.0.7</version>
 	</dependency>
 ```
 
