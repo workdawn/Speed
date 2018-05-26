@@ -18,10 +18,10 @@ public class MainActivity extends Activity {
 
     //Download link may fail, if it fails, please add new address
     private final static String WeChat = "http://imtt.dd.qq.com/16891/9A7CBD9CAFF7AA35E754408E2D2C6288.apk?fsname=com.tencent.mm_6.6.6_1300.apk&csr=1bbd";
-    private final static String TT = "http://a4.res.meizu.com/source/3668/55f6fd40391a4614b5f5418034daeb12?sign=bb047e10529185a34ae57f0eded5e95e&t=5afedecb&fname=com.meizu.media.reader_4003001";
-    private final static String BZ = "http://a3.res.meizu.com/source/3653/4af78c4aab7c48a18eb7fa65ba8c1a04?auth_key=1525960634-0-0-1904564795e931ccc24f17f189ee2c26&fname=com.lovebizhi.wallpaper_198";
-    private final static String WB = "http://a4.res.meizu.com/source/3651/335989b4d0594d868ee8f74538717310?sign=2fedf65086642a40c5e3eafe3a1b1387&t=5af451fd&fname=com.sina.weibo_3619";
-    private final static String QQ = "http://a3.res.meizu.com/source/3637/0e1a6a84267a4fb493bfe38c1b2ac8dd?auth_key=1525961282-0-0-ae7f6d07ca22be612933348d7f96d2ce&fname=com.tencent.mobileqq_832";
+    private final static String TT = "http://a3.res.meizu.com/source/3554/6968ae94729f41eda305f9c861188074?auth_key=1527263630-0-0-077c59ca3ea78ef4defe5b0c5e3ea474&fname=com.wochacha_9500";
+    private final static String BZ = "http://a3.res.meizu.com/source/3668/55f6fd40391a4614b5f5418034daeb12?auth_key=1527260023-0-0-b13e42a9a97811655bd3ec06748d4ba1&fname=com.meizu.media.reader_4003001";
+    private final static String WB = "http://a3.res.meizu.com/source/3645/aca2721ec7a942729f374b97b3741234?auth_key=1527260051-0-0-c67da9ea3816d406637d5709fae21957&fname=com.meizu.media.life_6004001";
+    private final static String QQ = "http://a3.res.meizu.com/source/3760/c5183d4185534c6ebbdf465790cb2e67?auth_key=1527260080-0-0-0d6888d1969c3a4619773246b9577878&fname=com.snda.wifilocating_3203";
 
     private ProgressBar p_we_chat;
     private ProgressBar p_Hys;
