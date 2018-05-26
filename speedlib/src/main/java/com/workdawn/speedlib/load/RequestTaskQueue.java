@@ -15,6 +15,7 @@ import com.workdawn.speedlib.core.Speed;
 import com.workdawn.speedlib.core.SpeedOption;
 import com.workdawn.speedlib.db.IDatabase;
 import com.workdawn.speedlib.executor.Dispatcher;
+import com.workdawn.speedlib.executor.DownloadExecutorService;
 import com.workdawn.speedlib.executor.ExecutorManager;
 import com.workdawn.speedlib.utils.ByteArrayPool;
 import com.workdawn.speedlib.utils.Utils;
@@ -22,7 +23,6 @@ import com.workdawn.speedlib.utils.Utils;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,8 +69,7 @@ public class RequestTaskQueue {
 
     private int currentNetType = SpeedOption.NETWORK_DEFAULT;
 
-    boolean isTaskExecutorInit = false;
-    public ExecutorService executorService;
+    public volatile ExecutorService executorService;
 
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
@@ -80,8 +79,8 @@ public class RequestTaskQueue {
     }
 
     public synchronized ExecutorService createExecutorService(){
-        if(!isTaskExecutorInit){
-            executorService = Executors.newFixedThreadPool(3);
+        if(executorService == null){
+            executorService = new DownloadExecutorService(SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT);
         }
         return executorService;
     }
@@ -423,7 +422,6 @@ public class RequestTaskQueue {
         sRequestTaskQueue = null;
         mSpeedOption = null;
         DISPATCHER_INIT = false;
-        isTaskExecutorInit = false;
 
         clearTaskQueueCallback();
 
