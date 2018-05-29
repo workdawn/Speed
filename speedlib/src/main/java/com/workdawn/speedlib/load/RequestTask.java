@@ -306,6 +306,11 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     private void handleFailedTask(){
+
+        if(status == Status.RESUME && priority == CHANGE_NETWORK_PRIORITY){
+            return;
+        }
+
         mRequestTaskQueue.decrementRunningTaskCount(this);
         if(taskFailedNum < MAX_ALLOW_TASK_FAILED_NUM){
             status = Status.RESUME;
