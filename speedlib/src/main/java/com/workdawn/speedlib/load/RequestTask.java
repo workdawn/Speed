@@ -221,7 +221,9 @@ public class RequestTask implements Comparable<RequestTask>{
     }
 
     public void setRequestTaskQueue(RequestTaskQueue mRequestTaskQueue) {
-        this.mRequestTaskQueue = mRequestTaskQueue;
+        if(this.mRequestTaskQueue == null){
+            this.mRequestTaskQueue = mRequestTaskQueue;
+        }
     }
 
     public void createExecutorService(int nThreads){
