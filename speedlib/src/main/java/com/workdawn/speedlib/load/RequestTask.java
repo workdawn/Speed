@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
+import com.workdawn.speedlib.ErrorCode;
 import com.workdawn.speedlib.Status;
 import com.workdawn.speedlib.callback.IDownloadProgressCallback;
 import com.workdawn.speedlib.callback.IDownloadResultCallback;
@@ -264,7 +265,7 @@ public class RequestTask implements Comparable<RequestTask>{
             downloadFailedThreadCount.incrementAndGet();
         }
         if(count == 0 && downloadFailedThreadCount.get() > 0){
-            processDownloadFailed(fileName + " download failed");
+            processDownloadFailed(ErrorCode.ERROR_UNKNOWN, fileName + " download failed");
         }
     }
 
@@ -291,14 +292,14 @@ public class RequestTask implements Comparable<RequestTask>{
         mRequestTaskQueue.clearCompleteTaskAndSelectNew(this);
     }
 
-    public void processDownloadFailed(final String message){
+    public void processDownloadFailed(final int errorCode, final String message){
         ExecutorManager.newInstance().getCallbackExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 if (mRequestTaskQueue.getResultCallback() != null) {
-                    mRequestTaskQueue.getResultCallback().onTaskError(url, message);
+                    mRequestTaskQueue.getResultCallback().onTaskError(url, errorCode, message);
                 } else if (downloadResultCallback != null) {
-                    downloadResultCallback.onError(message);
+                    downloadResultCallback.onError(errorCode, message);
                 }
                 handleFailedTask();
             }
@@ -308,11 +309,13 @@ public class RequestTask implements Comparable<RequestTask>{
     private void handleFailedTask(){
 
         if(status == Status.RESUME && priority == CHANGE_NETWORK_PRIORITY){
+            //Task has been added to the RESUME queue
             return;
         }
 
         mRequestTaskQueue.decrementRunningTaskCount(this);
         if(taskFailedNum < MAX_ALLOW_TASK_FAILED_NUM){
+            //Tasks with errors in the MAX_ALLOW_TASK_FAILED_NUM range, allowing the next priority to be executed
             status = Status.RESUME;
             priority = FAILED_TASK_PRIORITY;
             mRequestTaskQueue.addTaskToResumeQueue(this);

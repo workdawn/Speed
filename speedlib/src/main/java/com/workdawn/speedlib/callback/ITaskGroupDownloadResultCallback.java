@@ -7,5 +7,5 @@ package com.workdawn.speedlib.callback;
 public interface ITaskGroupDownloadResultCallback {
     void onTaskComplete(String url, String filePath);
 
-    void onTaskError(String url, String reason);
+    void onTaskError(String url, int errorCode, String reason);
 }

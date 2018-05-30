@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
 
+import com.workdawn.speedlib.ErrorCode;
 import com.workdawn.speedlib.core.SpeedOption;
 import com.workdawn.speedlib.executor.RequestRunnable;
 import com.workdawn.speedlib.load.IHttpClient;
@@ -149,14 +150,14 @@ public class Utils {
             return true;
         } catch (final IOException e) {
             e.printStackTrace();
-            requestTask.processDownloadFailed(e.getMessage());
+            requestTask.processDownloadFailed(ErrorCode.ERROR_UNKNOWN, e.getMessage());
         } finally {
             if(fileOutputStream != null){
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    requestTask.processDownloadFailed(e.getMessage());
+                    requestTask.processDownloadFailed(ErrorCode.ERROR_UNKNOWN, e.getMessage());
                 }
             }
             if(pool != null){

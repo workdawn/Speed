@@ -2,6 +2,7 @@ package com.workdawn.speedlib.executor;
 
 import android.util.SparseArray;
 
+import com.workdawn.speedlib.ErrorCode;
 import com.workdawn.speedlib.core.Speed;
 import com.workdawn.speedlib.core.SpeedOption;
 import com.workdawn.speedlib.db.IDatabase;
@@ -80,7 +81,7 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
             fileTotalBytes = httpClient.getContentLength();
             if(fileTotalBytes <= 0){
                 LogUtils.i("Http contentLength return 0");
-                requestTask.processDownloadFailed("contentLength is wrong, please try again");
+                requestTask.processDownloadFailed(ErrorCode.ERROR_HTTP, "contentLength is wrong, please try again");
                 return;
             }
             downloadCallback.setTotalBytes(fileTotalBytes);
@@ -89,7 +90,7 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
             blockLength = fileTotalBytes % SpeedOption.DEFAULT_MAX_ALLOW_DOWNLOAD_THREAD_COUNT == 0 ? tmp : tmp + 1;
             if(blockLength <= 0){
                 LogUtils.i("Http blockLength error");
-                requestTask.processDownloadFailed("block length is wrong");
+                requestTask.processDownloadFailed(ErrorCode.ERROR_HTTP, "block length is wrong");
                 return;
             }
             if(hasNoChange(eTag, cacheETag, cacheLastModified, lastModified)){
@@ -141,19 +142,19 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
                         } else {
                             //request error
                             LogUtils.i("Http download failed, responseCode = " + code);
-                            requestTask.processDownloadFailed("request error , requestCode = " + code);
+                            requestTask.processDownloadFailed(ErrorCode.ERROR_HTTP, "request error , requestCode = " + code);
                         }
                     }
                 } else {
                     //request error
                     LogUtils.i("Http download failed, responseCode = " + responseCode);
-                    requestTask.processDownloadFailed("request error , requestCode = " + responseCode);
+                    requestTask.processDownloadFailed(ErrorCode.ERROR_HTTP, "request error , requestCode = " + responseCode);
                     httpClient.close();
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
                 LogUtils.i("Http download failed, error message = " + e.getMessage());
-                requestTask.processDownloadFailed(e1.getMessage());
+                requestTask.processDownloadFailed(ErrorCode.ERROR_UNKNOWN, e1.getMessage());
                 httpClient.close();
             }
         }
@@ -248,12 +249,12 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
                 if(database.delete(requestTask.getUniqueId())){
                     if(!saveFile.delete()){
                         LogUtils.e("Old file delete failed");
-                        requestTask.processDownloadFailed("Old file delete failed");
+                        requestTask.processDownloadFailed(ErrorCode.ERROR_LOCAL, "Old file delete failed");
                         return;
                     }
                 } else {
                     LogUtils.e("Old file record delete failed");
-                    requestTask.processDownloadFailed("Old file record delete failed");
+                    requestTask.processDownloadFailed(ErrorCode.ERROR_LOCAL, "Old file record delete failed");
                     return;
                 }
 
@@ -294,7 +295,7 @@ public class RequestRunnable implements Runnable , MultiThreadDownloadCallback {
             if(saveFile.exists()){
                 if(!saveFile.delete()){
                     LogUtils.e("Old file delete failed");
-                    requestTask.processDownloadFailed("Old file delete failed");
+                    requestTask.processDownloadFailed(ErrorCode.ERROR_LOCAL, "Old file delete failed");
                     return;
                 }
             }
