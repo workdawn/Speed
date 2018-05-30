@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
                 }
 
                 @Override
-                public void onError(String reason) {
+                public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
                 }
             });
@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
                 }
 
                 @Override
-                public void onError(String reason) {
+                public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
                 }
             });
@@ -212,7 +212,7 @@ public class MainActivity extends Activity {
                 }
 
                 @Override
-                public void onError(String reason) {
+                public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
                 }
             });
@@ -249,7 +249,7 @@ public class MainActivity extends Activity {
                 }
 
                 @Override
-                public void onError(String reason) {
+                public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
                 }
             });
@@ -286,7 +286,7 @@ public class MainActivity extends Activity {
                 }
 
                 @Override
-                public void onError(String reason) {
+                public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
                 }
             });
