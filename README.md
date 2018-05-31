@@ -9,7 +9,12 @@ Speed
 更新日志
 ----
 
-当前版本`1.0.7`
+当前版本`1.0.8`
+<br>
+1.修复一些bug
+<br>
+
+版本`1.0.7`
 <br>
 1.修复下载线程池问题<br>
 2.修复一些bug<br>
@@ -86,7 +91,7 @@ Speed
 在项目module的build.gradle中添加:
 ```
     dependencies {
-	     compile 'com.github.workdawn:Speed:1.0.7'
+	     compile 'com.github.workdawn:Speed:1.0.8'
 	}
 ```
 
@@ -106,7 +111,7 @@ Speed
     <dependency>
 	    <groupId>com.github.workdawn</groupId>
 	    <artifactId>Speed</artifactId>
-	    <version>1.0.7</version>
+	    <version>1.0.8</version>
 	</dependency>
 ```
 
