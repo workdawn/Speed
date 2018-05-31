@@ -70,6 +70,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
+                    weChatMode = 0;
                 }
             });
         } else if(weChatMode == 1){
@@ -176,6 +177,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
+                    hysMode = 0;
                 }
             });
         } else if(hysMode == 1) {
@@ -214,6 +216,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
+                    bzMode = 0;
                 }
             });
         } else if(bzMode == 1){
@@ -251,6 +254,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
+                    wbMode = 0;
                 }
             });
         } else if(wbMode == 1){
@@ -288,6 +292,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onError(int errorCode, String reason) {
                     btn.setText("下载失败，点击重新下载");
+                    qqMode = 1;
                 }
             });
         } else if(qqMode == 1){
