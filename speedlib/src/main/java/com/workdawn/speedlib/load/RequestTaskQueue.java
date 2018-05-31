@@ -164,6 +164,9 @@ public class RequestTaskQueue {
     }
 
     void addTaskToPauseQueue(RequestTask requestTask){
+        if(resumeTaskQueue.contains(requestTask)){
+            resumeTaskQueue.remove(requestTask);
+        }
         pauseTaskQueue.put(requestTask);
         pollRequestTaskToRunningQueue();
     }
@@ -172,6 +175,13 @@ public class RequestTaskQueue {
         if(pauseTaskQueue.size() > 0){
             addTaskToResumeQueue(pauseTaskQueue.poll());
         }
+    }
+
+    public void removeAndAddTaskToResumeQueue(RequestTask task){
+        if(pauseTaskQueue.contains(task)){
+            pauseTaskQueue.remove(task);
+        }
+        addTaskToResumeQueue(task);
     }
 
     void addTaskToResumeQueue(RequestTask task){
@@ -269,6 +279,12 @@ public class RequestTaskQueue {
             uniqueKeys.remove(requestTask.getUrl(), requestTask.getUniqueId());
         }
         currentRunningTasks.remove(requestTask.getHashCode());
+
+        Future taskFuture = getTaskFuture(requestTask.getHashCode());
+        if(taskFuture != null){
+            taskFuture.cancel(true);
+            futures.remove(requestTask.getHashCode());
+        }
         autoQuit();
     }
 

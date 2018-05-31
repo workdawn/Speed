@@ -108,10 +108,13 @@ public class Speed {
                 return task;
             }
             if(Status.PAUSE == status){
-                LogUtils.w("Task already started and current status is pause , please use Speed.resume()");
+                task.setStatus(Status.RESUME);
+                task.setPriority(RequestTask.RE_START_PRIORITY);
+                sRequestTaskQueue.removeAndAddTaskToResumeQueue(task);
                 return task;
             }
 
+            //current task status is RESUME
             sRequestTaskQueue.reStart(task);
         } else {
             if(Utils.isStringEmpty(fileName)){

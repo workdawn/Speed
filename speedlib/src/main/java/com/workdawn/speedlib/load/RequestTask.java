@@ -46,7 +46,7 @@ public class RequestTask implements Comparable<RequestTask>{
     private IDownloadResultCallback downloadResultCallback;
     public final static int HANDLE_DOWNLOAD = 312;
     public final static int HANDLE_PRE_DOWNLOAD = 311;
-    private final static int RE_START_PRIORITY = 1;
+    public final static int RE_START_PRIORITY = 1;
     private final static int FAILED_TASK_PRIORITY = 2;
     final static int CHANGE_NETWORK_PRIORITY = 3;
     private final static int NORMAL_TASK_PRIORITY = 0;
@@ -126,7 +126,7 @@ public class RequestTask implements Comparable<RequestTask>{
         return status;
     }
 
-    void setStatus (Status status){
+    public void setStatus (Status status){
         this.status = status;
     }
 
