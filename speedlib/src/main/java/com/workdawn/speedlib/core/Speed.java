@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.workdawn.speedlib.Status;
+import com.workdawn.speedlib.callback.DownloadRequestSettingCallback;
 import com.workdawn.speedlib.db.IDatabase;
 import com.workdawn.speedlib.load.IHttpClient;
 import com.workdawn.speedlib.load.RequestTask;
@@ -83,17 +84,36 @@ public class Speed {
     }
 
     /**
-     * Start download task
+     * Start download
+     * @param url resource download address
+     * @return requestTask or null
+     */
+    public static RequestTask start(String url){
+        return start(url, null);
+    }
+
+    /**
+     * Start download
      * @param url resource download address
      * @param fileName file name with extension
      * @return requestTask or null
      */
     public static RequestTask start(String url, String fileName){
-        checkInit();
-        return realStart(url, fileName);
+        return start(url, fileName, null);
     }
 
-    private static RequestTask realStart(String url, String fileName){
+    /**
+     * Start download
+     * @param url resource download address
+     * @param fileName file name with extension
+     * @param cb task setting callback
+     */
+    public static RequestTask start(String url, String fileName, DownloadRequestSettingCallback cb){
+        checkInit();
+        return realStart(url, fileName, cb);
+    }
+
+    private static RequestTask realStart(String url, String fileName, DownloadRequestSettingCallback cb){
         Preconditions.checkArgument(Utils.isUrlCorrect(url), "Incorrect address " + url);
         String uniqueId = sRequestTaskQueue.getUniqueKey(url);
         if(Utils.isStringEmpty(uniqueId)){
@@ -126,18 +146,12 @@ public class Speed {
             }
             task = new RequestTask(sContext, url, fileName, uniqueId, sDefaultOption);
             task.setRequestTaskQueue(sRequestTaskQueue);
+            if(cb != null){
+                cb.requestParamsSetting(task);
+            }
             sRequestTaskQueue.start(task);
         }
         return task;
-    }
-
-    /**
-     * Start the download task
-     * @param url resource download address
-     * @return requestTask or null
-     */
-    public static RequestTask start(String url){
-        return start(url, null);
     }
 
     /**
@@ -156,6 +170,17 @@ public class Speed {
      * @return taskQueue
      */
     public static RequestTaskQueue start(ArrayList<String> urls, ArrayList<String> fileNames){
+        return start(urls, fileNames, null);
+    }
+
+
+    /**
+     * Start a group of tasks
+     * @param urls tasks url
+     * @param fileNames tasks file name
+     * @param cb task setting callback
+     */
+    public static RequestTaskQueue start(ArrayList<String> urls, ArrayList<String> fileNames, DownloadRequestSettingCallback cb){
         checkInit();
         Preconditions.checkArgument(urls != null && urls.size() > 0, "Group of task urls is empty");
         if(fileNames != null){
@@ -168,7 +193,7 @@ public class Speed {
             if(fileNames != null){
                 fileName = fileNames.get(i);
             }
-            realStart(url, fileName);
+            realStart(url, fileName, cb);
         }
         return sRequestTaskQueue;
     }
