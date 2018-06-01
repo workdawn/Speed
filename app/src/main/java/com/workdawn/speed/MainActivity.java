@@ -6,13 +6,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.workdawn.speedlib.callback.DownloadRequestSettingCallback;
 import com.workdawn.speedlib.callback.IDownloadProgressCallback;
 import com.workdawn.speedlib.callback.IDownloadResultCallback;
 import com.workdawn.speedlib.callback.ITaskGroupDownloadProgressCallback;
 import com.workdawn.speedlib.callback.ITaskGroupDownloadResultCallback;
 import com.workdawn.speedlib.core.Speed;
+import com.workdawn.speedlib.load.RequestTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends Activity {
 
@@ -50,11 +54,19 @@ public class MainActivity extends Activity {
         final Button btn = (Button) view;
         if(weChatMode == 0){
             weChatMode = 1;
-            Speed.start(WeChat, "weChat.apk").setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
+            Speed.start(WeChat, "weChat.apk", new DownloadRequestSettingCallback() {
+                @Override
+                public void requestParamsSetting(RequestTask task) {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("key", "header");
+                    headers.put("key1", "header1");
+                    task.setRequestHeaders(headers);
+                }
+            }).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
                 @Override
                 public void onDownloading(long totalSize, long currentSize) {
                     float progress = currentSize / (totalSize * 1.0f);
-                    p_we_chat.setProgress((int)(progress  * 100));
+                    p_we_chat.setProgress((int) (progress * 100));
                 }
 
                 @Override
