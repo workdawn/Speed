@@ -1,6 +1,6 @@
 package com.workdawn.speedlib.callback;
 
-import com.workdawn.speedlib.load.RequestTask;
+import com.workdawn.speedlib.load.RequestTaskWrapper;
 
 /**
  * Created on 2018/6/1.
@@ -8,5 +8,5 @@ import com.workdawn.speedlib.load.RequestTask;
  */
 public interface DownloadRequestSettingCallback {
 
-    void requestParamsSetting(RequestTask task);
+    void requestParamsSetting(RequestTaskWrapper task);
 }

@@ -71,6 +71,8 @@ public class RequestTaskQueue {
 
     public volatile ExecutorService executorService;
 
+    private RequestTaskWrapper mTaskWrapper;
+
     private RequestTaskQueue(Context context, SpeedOption speedOption){
         mSpeedOption = speedOption;
         mPool = new ByteArrayPool(4096);
@@ -120,6 +122,10 @@ public class RequestTaskQueue {
 
     void setDispatcher(Dispatcher dispatcher){
         this.dispatcher = dispatcher;
+    }
+
+    public void setRequestTaskWrapper(RequestTaskWrapper taskWrapper){
+        mTaskWrapper = taskWrapper;
     }
 
     public String getUniqueKey(String url){
@@ -402,6 +408,7 @@ public class RequestTaskQueue {
         pauseTaskQueue.clear();
         currentRunningTasks.clear();
         futures.clear();
+        mTaskWrapper = null;
     }
 
     public void quit(){

@@ -10,6 +10,7 @@ import com.workdawn.speedlib.db.IDatabase;
 import com.workdawn.speedlib.load.IHttpClient;
 import com.workdawn.speedlib.load.RequestTask;
 import com.workdawn.speedlib.load.RequestTaskQueue;
+import com.workdawn.speedlib.load.RequestTaskWrapper;
 import com.workdawn.speedlib.utils.LogUtils;
 import com.workdawn.speedlib.utils.Preconditions;
 import com.workdawn.speedlib.utils.Utils;
@@ -147,7 +148,9 @@ public class Speed {
             task = new RequestTask(sContext, url, fileName, uniqueId, sDefaultOption);
             task.setRequestTaskQueue(sRequestTaskQueue);
             if(cb != null){
-                cb.requestParamsSetting(task);
+                RequestTaskWrapper taskWrapper = RequestTaskWrapper.getInstance();
+                cb.requestParamsSetting(taskWrapper.wrapperTask(task));
+                sRequestTaskQueue.setRequestTaskWrapper(taskWrapper);
             }
             sRequestTaskQueue.start(task);
         }
