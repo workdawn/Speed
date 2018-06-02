@@ -13,6 +13,7 @@ import com.workdawn.speedlib.callback.ITaskGroupDownloadProgressCallback;
 import com.workdawn.speedlib.callback.ITaskGroupDownloadResultCallback;
 import com.workdawn.speedlib.core.Speed;
 import com.workdawn.speedlib.load.RequestTask;
+import com.workdawn.speedlib.load.RequestTaskWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,10 +23,10 @@ public class MainActivity extends Activity {
 
     //Download link may fail, if it fails, please add new address
     private final static String WeChat = "http://imtt.dd.qq.com/16891/9A7CBD9CAFF7AA35E754408E2D2C6288.apk?fsname=com.tencent.mm_6.6.6_1300.apk&csr=1bbd";
-    private final static String TT = "http://a3.res.meizu.com/source/3554/6968ae94729f41eda305f9c861188074?auth_key=1527263630-0-0-077c59ca3ea78ef4defe5b0c5e3ea474&fname=com.wochacha_9500";
-    private final static String BZ = "http://a3.res.meizu.com/source/3668/55f6fd40391a4614b5f5418034daeb12?auth_key=1527260023-0-0-b13e42a9a97811655bd3ec06748d4ba1&fname=com.meizu.media.reader_4003001";
-    private final static String WB = "http://a3.res.meizu.com/source/3645/aca2721ec7a942729f374b97b3741234?auth_key=1527260051-0-0-c67da9ea3816d406637d5709fae21957&fname=com.meizu.media.life_6004001";
-    private final static String QQ = "http://a3.res.meizu.com/source/3760/c5183d4185534c6ebbdf465790cb2e67?auth_key=1527260080-0-0-0d6888d1969c3a4619773246b9577878&fname=com.snda.wifilocating_3203";
+    private final static String TT = "http://a3.res.meizu.com/source/3645/aca2721ec7a942729f374b97b3741234?auth_key=1527863305-0-0-12117353f3f22c2447d145b39763a4c8&fname=com.meizu.media.life_6004001";
+    private final static String BZ = "http://a3.res.meizu.com/source/3668/55f6fd40391a4614b5f5418034daeb12?auth_key=1527863331-0-0-75ca0b6e0cfbaac462b9b043e6f1e757&fname=com.meizu.media.reader_4003001";
+    private final static String WB = "http://meizu-qn-apk.wdjcdn.com/b/da/9c76590a18bb754710d25c3b11477dab.apk";
+    private final static String QQ = "http://a4.res.meizu.com/source/2747/47042d52b64f49c48d2f68359add3d34?sign=bfc6fcebbaa2160606d215181bc0652b&t=5b1158a2&fname=com.quickwis.funpin_46";
 
     private ProgressBar p_we_chat;
     private ProgressBar p_Hys;
@@ -56,10 +57,10 @@ public class MainActivity extends Activity {
             weChatMode = 1;
             Speed.start(WeChat, "weChat.apk", new DownloadRequestSettingCallback() {
                 @Override
-                public void requestParamsSetting(RequestTask task) {
+                public void requestParamsSetting(RequestTaskWrapper task) {
                     Map<String, String> headers = new HashMap<>();
-                    headers.put("key", "header");
-                    headers.put("key1", "header1");
+                    headers.put("key0-wc", "header0");
+                    headers.put("key1-wc", "header1");
                     task.setRequestHeaders(headers);
                 }
             }).setOnDownloadProgressChangeListener(new IDownloadProgressCallback() {
