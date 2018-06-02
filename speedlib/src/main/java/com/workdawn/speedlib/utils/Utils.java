@@ -39,10 +39,11 @@ public class Utils {
             byte[] b = MessageDigest.getInstance("MD5").digest(url.getBytes("UTF-8"));
             return new String(b);
         } catch (NoSuchAlgorithmException e) {
-            return generateKeyWhenFailed(url);
+            e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-            return generateKeyWhenFailed(url);
+            e.printStackTrace();
         }
+        return generateKeyWhenFailed(url);
     }
 
     static String generateKeyWhenFailed(String url){
